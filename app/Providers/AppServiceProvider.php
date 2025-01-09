@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Laravel\Socialite\Contracts\Factory as Socialite;
+use App\Providers\AdobeSignProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,8 +19,12 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(Socialite $socialite): void
     {
-        //
+        $socialite->extend('adobesign', function ($app) use ($socialite) {
+            $config = $app['config']['services.adobesign'];
+
+            return $socialite->buildProvider(AdobeSignProvider::class, $config);
+        });
     }
 }

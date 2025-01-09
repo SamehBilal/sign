@@ -21,6 +21,19 @@ return [
         'scheme' => 'https',
     ],
 
+    'adobe_sign' => [
+        'base_uri'          => env('ADOBE_SIGN_BASE_URI'),
+        'api_key'           => env('ADOBE_SIGN_API_KEY'),
+        'integration_key'   => env('ADOBE_SIGN_INTEGRATION_KEY'),
+        'account_id'        => env('ADOBE_SIGN_ACCOUNT_ID'),
+    ],
+
+    'adobesign' => [
+        'client_id' => env('ADOBESIGN_CLIENT_ID'),
+        'client_secret' => env('ADOBESIGN_CLIENT_SECRET'),
+        'redirect' => env('ADOBESIGN_REDIRECT_URI'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],
