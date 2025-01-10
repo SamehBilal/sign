@@ -130,7 +130,7 @@
                     ],
                     responsive: true,
                     order: [
-                        [0, 'desc']
+                        [0, 'asc']
                     ],
                     columnDefs: [{
                         targets: [2], // Index of the Published At column

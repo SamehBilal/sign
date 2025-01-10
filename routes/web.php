@@ -1,20 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SocialiteController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\AdobeSignController;
 use App\Http\Controllers\AgreementController;
 use App\Http\Controllers\TalentController;
-use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
-use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Auth\Events\Registered;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,79 +37,14 @@ Route::post('/send-bulk-agreements', [AdobeSignController::class, 'sendBulkAgree
 Route::get('/agreement-status/{agreementId}', [AdobeSignController::class, 'checkAgreementStatus']);
 Route::post('/cancel-agreement/{agreementId}', [AdobeSignController::class, 'cancelAgreement']);
 
-Route::get('/auth/adobesign/redirect', function () {
-    return Socialite::driver('adobesign')->redirect();
-})->name('adobe.login');
+Route::get('/auth/adobesign/redirect', [SocialiteController::class, 'socialite'])->name('adobe.login');
 
-Route::get('/auth/adobesign/callback', function (Request $request) {
-    $code = $request->get('code');
-
-    $response = Http::asForm()->post('https://api.na4.adobesign.com/oauth/v2/token', [
-        'grant_type'    => 'authorization_code',
-        'client_id'     => env('ADOBESIGN_CLIENT_ID'),
-        'client_secret' => env('ADOBESIGN_CLIENT_SECRET'),
-        'redirect_uri'  => env('ADOBESIGN_REDIRECT_URI'),
-        'code'          => $code,
-    ]);
-
-    if ($response->successful()) {
-        $responseData = $response->json();
-        $accessToken = $responseData['access_token'];
-        $expiresIn = $response['expires_in']; // This is in seconds
-        $client = new Client();
-        $response = $client->get('https://api.na4.adobesign.com/api/rest/v6/users/me', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $accessToken,
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
-        if ($response->getStatusCode() === 200) {
-
-            // Store the access token and its expiration time in session
-            session([
-                'ADOBESIGN_ACCESS_TOKEN' => $accessToken,
-                'ADOBESIGN_TOKEN_EXPIRES_AT' => now()->addSeconds($expiresIn)
-            ]);
-
-            // Store the access token and its expiration time in the cache
-            Cache::put('ADOBESIGN_ACCESS_TOKEN', $accessToken, now()->addSeconds($expiresIn));
-            Cache::put('ADOBESIGN_TOKEN_EXPIRES_AT', now()->addSeconds($expiresIn), now()->addSeconds($expiresIn));
-
-            $user = json_decode($response->getBody(), true);
-            $email = $user['email'];
-            $firstName = $user['firstName'];
-            $lastName = $user['lastName'];
-            $adobeId = $user['id'];
-
-            // Use updateOrCreate to insert or update the user
-            $userRecord = \App\Models\User::updateOrCreate(
-                // Match the user by email
-                ['email' => $email],
-                // Update or create with the following fields
-                [
-                    'name' => $firstName . ' ' . $lastName, // Combine first and last name
-                    'adobe_id' => $adobeId,
-                    'password' => '$2y$12$pWmzu/cyKUq0xrJenDJmxeS/KJOLHRZ8ZgaywILSGGqhh5mDXNieu', // Generate a random password for new users
-                ]
-            );
-
-            event(new Registered($user));
-
-            Auth::login($userRecord);
-
-            return redirect(RouteServiceProvider::HOME);
-        } else {
-            return response()->json(['error' => 'Failed to fetch user data'], $response->getStatusCode());
-        }
-    } else {
-        return response()->json(['error' => 'Failed to obtain access token'], $response->status());
-    }
-});
+Route::get('/auth/adobesign/callback', [SocialiteController::class, 'callback'])->name('adobe.callback');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile-refresh', [ProfileController::class, 'refresh'])->name('profile.refresh');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 

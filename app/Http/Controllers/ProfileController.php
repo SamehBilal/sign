@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Http;
 
 class ProfileController extends Controller
 {
@@ -35,6 +36,33 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Refresh the user's token.
+     */
+    public function refresh(ProfileUpdateRequest $request): RedirectResponse
+    {
+        $request->user()->fill($request->validated());
+
+        $response = Http::asForm()->post('https://api.na4.adobesign.com/oauth/v2/refresh', [
+            'grant_type'    => 'refresh_token',
+            'client_id'     => env('ADOBESIGN_CLIENT_ID'),
+            'client_secret' => env('ADOBESIGN_CLIENT_SECRET'),
+            'refresh_token' => $request->refresh_token,
+        ]);
+
+        $responseData = $response->json();
+        $request->user()->access_token  = $responseData['access_token'];
+        $request->user()->expires_in    = $responseData['expires_in'];
+
+        if ($request->user()->isDirty('email')) {
+            $request->user()->email_verified_at = null;
+        }
+
+        $request->user()->save();
+
+        return Redirect::route('profile.edit')->with('status', 'token-refreshed');
     }
 
     /**

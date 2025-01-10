@@ -22,6 +22,9 @@ class User extends Authenticatable
         'email',
         'password',
         'adobe_id',
+        'access_token',
+        'refresh_token',
+        'expires_in',
     ];
 
     /**
