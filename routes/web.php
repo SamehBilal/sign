@@ -63,6 +63,7 @@ Route::get('/auth/adobesign/callback', function (Request $request) {
     if ($response->successful()) {
         $responseData = $response->json();
         $accessToken = $responseData['access_token'];
+        $expiresIn = $response['expires_in']; // This is in seconds
         $client = new Client();
         $response = $client->get('https://api.na4.adobesign.com/api/rest/v6/users/me', [
             'headers' => [
@@ -72,8 +73,17 @@ Route::get('/auth/adobesign/callback', function (Request $request) {
         ]);
 
         if ($response->getStatusCode() === 200) {
-            session(['ADOBESIGN_ACCESS_TOKEN' => $accessToken]);
-            Cache::put('ADOBESIGN_ACCESS_TOKEN', $accessToken, now()->addMinutes(60)); // expires in 1 hour
+
+            // Store the access token and its expiration time in session
+            session([
+                'ADOBESIGN_ACCESS_TOKEN' => $accessToken,
+                'ADOBESIGN_TOKEN_EXPIRES_AT' => now()->addSeconds($expiresIn)
+            ]);
+
+            // Store the access token and its expiration time in the cache
+            Cache::put('ADOBESIGN_ACCESS_TOKEN', $accessToken, now()->addSeconds($expiresIn));
+            Cache::put('ADOBESIGN_TOKEN_EXPIRES_AT', now()->addSeconds($expiresIn), now()->addSeconds($expiresIn));
+
             $user = json_decode($response->getBody(), true);
             $email = $user['email'];
             $firstName = $user['firstName'];
@@ -88,7 +98,7 @@ Route::get('/auth/adobesign/callback', function (Request $request) {
                 [
                     'name' => $firstName . ' ' . $lastName, // Combine first and last name
                     'adobe_id' => $adobeId,
-                    'password' => Hash::make("social@123456"), // Generate a random password for new users
+                    'password' => '$2y$12$pWmzu/cyKUq0xrJenDJmxeS/KJOLHRZ8ZgaywILSGGqhh5mDXNieu', // Generate a random password for new users
                 ]
             );
 

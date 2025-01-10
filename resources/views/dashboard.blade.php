@@ -27,7 +27,7 @@
                                 <x-input-label for="csvFile" :value="__('Select CSV File:')" />
                                 <input id="csvFile" name="file" type="file"
                                     class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-300 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
-                                    accept=".csv" required autofocus />
+                                    accept=".csv" required  />
                                 <x-input-error class="mt-2" :messages="$errors->get('file')" />
                             </div>
 

@@ -34,6 +34,10 @@ state=S6YQD7KDA556DIV6NAU4ELTGSIV26ZNMXDSF7WIEEP0ZLQCLDQ89OYG78C3K9SROC8DXCGRVSG
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @stack('styles')
+
+    @stack('scripts')
 </head>
 
 <body class="font-sans antialiased">
