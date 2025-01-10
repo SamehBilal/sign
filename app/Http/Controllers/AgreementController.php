@@ -6,6 +6,7 @@ use App\Models\Agreement;
 use App\Http\Requests\StoreAgreementRequest;
 use App\Http\Requests\UpdateAgreementRequest;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class AgreementController extends Controller
 {
@@ -29,7 +30,18 @@ class AgreementController extends Controller
      */
     public function index()
     {
-        //
+        $apiKey = session()->get('ADOBESIGN_ACCESS_TOKEN');
+        $client = new Client();
+        $response = $client->get('https://secure.na4.adobesign.com/api/rest/v6/agreements', [
+            'headers' => [
+                'Authorization' => "Bearer {$apiKey}",
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $agreements = json_decode($response->getBody()->getContents(), true);
+
+        return view('index',compact('agreements'));
     }
 
     /**

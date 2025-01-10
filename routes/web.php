@@ -39,7 +39,7 @@ Route::post('/upload-csv', [FileUploadController::class, 'uploadCsv'])->name('up
 Route::post('/prepare-agreements', [AgreementController::class, 'prepareAgreements']);
 
 Route::post('/send-agreement', [AdobeSignController::class, 'sendAgreement'])->name('sendAgreement');
-Route::get('/agreements', [AdobeSignController::class, 'index'])->name('agreements.index');
+Route::get('/agreements', [AgreementController::class, 'index'])->name('agreements.index');
 Route::get('/talents', [TalentController::class, 'index'])->name('talents.index');
 Route::post('/send-bulk-agreements', [AdobeSignController::class, 'sendBulkAgreements'])->name('send.bulk.agreements');
 Route::get('/agreement-status/{agreementId}', [AdobeSignController::class, 'checkAgreementStatus']);

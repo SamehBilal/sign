@@ -20,12 +20,12 @@
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('agreements.index')" :active="request()->routeIs('agreements.index')">
-                        {{ __('Ageements') }}
+                        {{ __('Agreements') }}
                     </x-nav-link>
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('agreements.index')" :active="request()->routeIs('agreements.index')">
+                    <x-nav-link :href="route('talents.index')" :active="request()->routeIs('talents.index')">
                         {{ __('Library') }}
                     </x-nav-link>
                 </div>
