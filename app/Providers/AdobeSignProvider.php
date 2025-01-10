@@ -39,7 +39,7 @@ class AdobeSignProvider extends AbstractProvider
      */
     protected function getUserByToken($token)
     {
-        $response = (new Client())->get('https://api.na1.adobesign.com/api/rest/v6/users/me', [
+        $response = (new Client())->get('https://api.na4.adobesign.com/api/rest/v6/users/me', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $token,
                 'Content-Type' => 'application/json',

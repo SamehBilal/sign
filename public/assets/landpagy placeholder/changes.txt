@@ -1,0 +1,43 @@
+----- 1.2.2 (25 January 2022) -----
+New: Product page added, Filterable job section added in Career page, Home mega menu added
+Tweaked: Process page overall animations , Career page overall issue 
+
+----- 1.2.1 (13 January 2022) -----
+Tweaked: Cloud SAAS page animations, Dropdown Icon
+
+----- 1.2.0 (04 January 2022) -----
+New: Mega Munu Added for Elements
+New: Accordion, Client, Fun Fact, Get App, Google Map, Integration, Stories, Subscribe, Tab, Team, Testimonial, Video Element Pages Added
+
+----- 1.1.9 (15 December 2021) -----
+Tweaked: All pages overall minor issues
+
+----- 1.1.8 (25 November 2021) -----
+Tweaked: Software Demo Landing & Prototype pages overall design
+
+----- 1.1.7 (24 November 2021) -----
+Tweaked: Software Company, Payment Processing, HRM Software, POS Software pages overall design
+
+----- 1.1.6 (17 November 2021) -----
+New: Sign In, Sign Up, Faq, 404, Comming Soon:(1-4) pages added
+
+----- 1.1.5 (13 November 2021) -----
+New: Process page added
+
+----- 1.1.4 (01 November 2021) -----
+New: Mobile App Landing page & Preloader added
+Tweaked: Sticky menu fixed, Pricing table load fix, Statistic Image Issue, 
+Tweaked: Software page add signup button in menu, Prototype Page Brand color fix
+
+----- 1.1.3 (23 October 2021) -----
+New: Account Billing Software & Cloud SAAS page added
+
+----- 1.1.2 (04 October 2021) -----
+New: Pricing Two page added
+
+----- 1.1.1 (30 September 2021) -----
+New: Contact Two, Services pages added
+
+----- 1.1.0 (23 September 2021) -----
+Tweaked: About Two history slider, Software demo landing counter images
+New: Blog Extended Grid, Career, Jobs, Job Application pages added

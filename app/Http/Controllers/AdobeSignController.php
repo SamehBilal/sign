@@ -56,9 +56,13 @@ class AdobeSignController extends Controller
 
         foreach ($agreements  as $agreement) {
             try {
-                return response()->json(['message' => "Sending agreement to {$agreement['email']} for {$agreement['document_name']}"], 200);
+                //return response()->json(['message' => "Sending agreement to {$agreement['email']} for {$agreement['document_name']}"], 200);
 
-                $this->sendAgreementToSigner($agreement);
+                $this->adobeSignService->sendAgreement(
+                    /* $request->input('template_id') */"CBJCHBCAABAAT_A3oailznhaOvANj-aixrGAnDUEvNRg",
+                    $agreement['email'],
+                    $agreement['document_name']
+                );
             } catch (\Exception $e) {
                 return response()->json(['error' => "Failed to send agreement: {$e->getMessage()}"], 500);
             }

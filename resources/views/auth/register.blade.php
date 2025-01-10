@@ -49,4 +49,21 @@
             </x-primary-button>
         </div>
     </form>
+
+    <!-- Divider -->
+    <div class="flex items-center my-6">
+        <div class="w-full border-t border-gray-300"></div>
+        <span class="block mx-2 text-sm text-gray-700">{{ __('OR') }}</span>
+        <div class="w-full border-t border-gray-300"></div>
+    </div>
+
+     <!-- Login with Adobe -->
+     <div class="flex justify-center">
+        <a href="{{ route('adobe.login') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 transition ease-in-out duration-150">
+            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l18-9v18l-18-9zm9-4.5v9m0-9l6 4.5-6 4.5-6-4.5 6-4.5z" />
+            </svg>
+            {{ __('Login with Adobe') }}
+        </a>
+    </div>
 </x-guest-layout>

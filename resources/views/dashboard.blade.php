@@ -159,7 +159,7 @@
                                     statusContainer.innerHTML = `<p class="text-sm text-gray-600 fade-out">Uploaded.</p>`;
                                     setTimeout(() => {
                                         statusContainer.innerHTML = '';
-                                    }, 10000);
+                                    }, 1000);
                                 } else {
                                     alert('Failed to extract data: ' + data.results);
                                 }
