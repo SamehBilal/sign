@@ -288,15 +288,21 @@ class AdobeSignService
                 'status' => 'OUT_FOR_SIGNATURE',
             ], */
             'json' => [
+                "signatureFlow"=> "SENDER_SIGNATURE_NOT_REQUIRED",
                 'participantSetsInfo' => [
                     [
-                        'role' => 'SIGNER',
-                        'order' => 1,
-                        "deliverableEmail" => true,
+                        'role' => 'APPROVER',
+                        'order' => 2,
                         'memberInfos' => [
                             [
                                 'email' => 'sameh@ar-ad.com',
                             ],
+                        ],
+                    ],
+                    [
+                        'role' => 'SIGNER',
+                        'order' => 1,
+                        'memberInfos' => [
                             [
                                 'email' => $recipients,
                             ],
@@ -321,6 +327,7 @@ class AdobeSignService
                     ],
                 ],
                 'state' => 'IN_PROCESS',
+                'status' => "OUT_FOR_SIGNATURE"
             ],
         ]);
 

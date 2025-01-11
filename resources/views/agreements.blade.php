@@ -174,6 +174,10 @@
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            {{ __('ID') }}
+                                        </th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {{ __('Date') }}
                                         </th>
                                         <th
@@ -194,6 +198,8 @@
                                                 </td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
                                                     {{ $agreement['name'] }}</td>
+                                                <td class="px-6 text-sm py-4 whitespace-nowrap">
+                                                    {{ $agreement['id'] }}</td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
                                                     {{ $agreement['displayDate'] }}</td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
@@ -273,7 +279,7 @@
                         [0, 'asc']
                     ],
                     columnDefs: [{
-                        targets: [2], // Index of the Published At column
+                        targets: [3], // Index of the Published At column
                         render: function(data) {
                             if (data) {
                                 const localDate = new Date(data).toLocaleDateString(undefined, {
