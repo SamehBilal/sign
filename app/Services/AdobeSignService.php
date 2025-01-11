@@ -295,6 +295,9 @@ class AdobeSignService
                         "deliverableEmail" => true,
                         'memberInfos' => [
                             [
+                                'email' => 'sameh@ar-ad.com',
+                            ],
+                            [
                                 'email' => $recipients,
                             ],
                         ],

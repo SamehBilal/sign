@@ -70,7 +70,7 @@ class AdobeSignController extends Controller
             }
         }
 
-        return response()->json(['message' => 'Agreements sent successfully!'], 200);
+        return redirect()->back()->with('status', 'Agreements sent successfully!');
     }
 
     public function checkAgreementStatus($agreementId)

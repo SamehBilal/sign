@@ -5,6 +5,20 @@
         </h2>
     </x-slot>
 
+    @if (session('status') == 'Agreements sent successfully!')
+    <div class="py-4">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-3 text-gray-900">
+                    <div class="font-medium text-green-600">
+                        {{ __('Agreements sent successfully!') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -20,8 +34,8 @@
                             </p>
                         </header>
 
-                        <form method="POST" id="csvUploadForm" class="mt-6 space-y-6" action="{{ route('upload.csv') }}"
-                            enctype="multipart/form-data">
+                        <form method="POST" id="csvUploadForm" class="mt-6 space-y-6"
+                            action="{{ route('upload.csv') }}" enctype="multipart/form-data">
                             @csrf
                             <div>
                                 <x-input-label for="csvFile" :value="__('Select CSV File:')" />
