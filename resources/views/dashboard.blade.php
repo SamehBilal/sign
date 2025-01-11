@@ -27,7 +27,7 @@
                                 <x-input-label for="csvFile" :value="__('Select CSV File:')" />
                                 <input id="csvFile" name="file" type="file"
                                     class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-300 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
-                                    accept=".csv" required  />
+                                    accept=".csv" required />
                                 <x-input-error class="mt-2" :messages="$errors->get('file')" />
                             </div>
 
@@ -68,6 +68,23 @@
                         <div id="data-section" class="mt-6 hidden">
                             <form id="bulkSendForm" method="POST" action="{{ route('send.bulk.agreements') }}">
                                 @csrf
+
+                                <!-- Template Selection Dropdown -->
+                                <div class="mb-4">
+                                    <x-input-label for="template" :value="__('Select Template')" />
+                                    <select id="template" name="template_id"
+                                        class="mt-1 block w-full text-sm text-gray-500" required>
+                                        @if (array_key_exists('libraryDocumentList', $templates))
+                                            @foreach ($templates['libraryDocumentList'] as $template)
+                                                <option value="{{ $template['id'] }}"
+                                                    data-name="{{ $template['name'] }}">
+                                                    {{ $template['name'] }}</option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                    <x-input-error class="mt-2" :messages="$errors->get('template_id')" />
+                                </div>
+
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full divide-y divide-gray-200">
                                         <thead class="bg-gray-50">
@@ -94,7 +111,11 @@
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('Document Name') }}
+                                                    {{ __('Data 1') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Data 2') }}
                                                 </th>
                                             </tr>
                                         </thead>
@@ -144,14 +165,15 @@
                                     const extractedData = data.results;
                                     extractedData.forEach((item, index) => {
                                         const row = `<tr>
-                                                        <td class="px-6 py-4 whitespace-nowrap">${index + 1}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">
-                                                            <input type="checkbox" name="selected[]" value="${index}" data-name="${item.name}" data-email="${item.email}" data-document="${item.document_name}" data-bank-account="${item.bank_account}">
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${index + 1}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">
+                                                            <input type="checkbox" name="selected[]" value="${index}" data-name="${item.name}" data-email="${item.email}" data-bank-account="${item.bank_account}" data-data1="${item.data1}" data-data2="${item.data2}">
                                                         </td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">${item.name}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">${item.email}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">${item.bank_account}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap">${item.document_name}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.name}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.email}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.bank_account}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.data1}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.data2}</td>
                                                     </tr>`;
                                         dataTableBody.insertAdjacentHTML('beforeend', row);
                                     });
@@ -184,8 +206,9 @@
                             agreements.push({
                                 name: row.dataset.name,
                                 email: row.dataset.email,
-                                document_name: row.dataset.document,
                                 bank_account: row.dataset.bankAccount,
+                                data1: row.dataset.data1,
+                                data2: row.dataset.data2,
                             });
                         });
 
@@ -194,6 +217,20 @@
                         agreementsInput.name = 'agreements';
                         agreementsInput.value = JSON.stringify(agreements);
 
+                        const templateIdInput = document.createElement('input');
+                        templateIdInput.type = 'hidden';
+                        templateIdInput.name = 'template_id';
+                        templateIdInput.value = document.getElementById('template').value;
+
+                        const templateName = document.querySelector('#template option:checked').text;
+
+                        const templateNameInput = document.createElement('input');
+                        templateNameInput.type = 'hidden';
+                        templateNameInput.name = 'template_name';
+                        templateNameInput.value = templateName;
+
+                        this.appendChild(templateIdInput);
+                        this.appendChild(templateNameInput);
                         this.appendChild(agreementsInput);
                     });
                 </script>

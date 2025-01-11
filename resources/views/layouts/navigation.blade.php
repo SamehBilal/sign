@@ -25,16 +25,11 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('talents.index')" :active="request()->routeIs('talents.index')">
-                        {{ __('Library') }}
+                    <x-nav-link :href="route('templates.index')" :active="request()->routeIs('templates.index')">
+                        {{ __('Templates') }}
                     </x-nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('talents.index')" :active="request()->routeIs('talents.index')">
-                        {{ __('Talents') }}
-                    </x-nav-link>
-                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -87,7 +82,15 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
+                {{ __('Start Process') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('agreements.index')" :active="request()->routeIs('agreements.index')">
+                {{ __('Agreements') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('templates.index')" :active="request()->routeIs('templates.index')">
+                {{ __('Templates') }}
             </x-responsive-nav-link>
         </div>
 

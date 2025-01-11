@@ -43,8 +43,8 @@
     <header class="header-area">
         <nav class="navbar navbar-expand-lg menu_three sticky-nav">
             <div class="container-fluid">
-                <a class="navbar-brand header_logo" href="index.html">
-                    <img class="main_logo" src="{{ asset('assets/img/logo1.png') }}" alt="logo" />
+                <a class="navbar-brand header_logo" href="{{ route('index') }}">
+                    <img class="main_logo" src="{{ asset('assets/img/logo1.png') }}" alt="logo" height="52px" />
                 </a>
                 <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false"

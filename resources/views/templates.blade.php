@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Agreements') }}
+            {{ __('Templates') }}
         </h2>
     </x-slot>
 
@@ -12,11 +12,143 @@
                     <section>
                         <header>
                             <h2 class="text-lg font-medium text-gray-900">
-                                {{ __('Agreements List') }}
+                                {{ __('Upload Document') }}
                             </h2>
 
                             <p class="mt-1 text-sm text-gray-600">
-                                {{ __('Upload a CSV file to start the flow.') }}
+                                {{ __('Upload a transient document to get the id then to create a template from it.') }}
+                            </p>
+                        </header>
+
+                        <form method="POST" id="csvUploadForm" class="mt-6 space-y-6" action="{{ route('upload.template') }}"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div>
+                                <x-input-label for="csvFile" :value="__('Select Document:')" />
+                                <input id="csvFile" name="file" type="file"
+                                    class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-300 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
+                                    accept=".pdf" required  />
+                                <x-input-error class="mt-2" :messages="$errors->get('file')" />
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="flex items-center gap-4 status-container"></div>
+                                {{-- <x-primary-button>{{ __('Upload') }}</x-primary-button> --}}
+                                @if (session('status') === 'template-updated')
+                                    <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                                        class="text-sm text-gray-600">{{ __('Saved.') }}</p>
+                                @endif
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hidden" id="make-template">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <section>
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900">
+                                {{ __('Make A Template') }}
+                            </h2>
+
+                            <p class="mt-1 text-sm text-gray-600">
+                                {{ __('create a template from a transient document.') }}
+                            </p>
+                        </header>
+
+                        <form id="make-template" class="mt-6 space-y-6" method="post" action="{{ route('templates.store') }}">
+                            @csrf
+                            
+                            <div>
+                                <x-input-label for="name" :value="__('File Name')" />
+                                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                            </div>
+
+                            <div>
+                                <x-input-label for="id" :value="__('Transient ID')" />
+                                <x-text-input id="id" name="id" type="text" class="mt-1 block w-full" :value="old('id')" />
+                                <x-input-error class="mt-2" :messages="$errors->get('id')" />
+                            </div>
+
+                            {{-- <div class="flex items-center gap-4 status-container"></div> --}}
+                            <div class="flex items-center gap-4">
+                                <x-primary-button>{{ __('Save') }}</x-primary-button>
+                                @if (session('status') === 'template-updated')
+                                    <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
+                                        class="text-sm text-gray-600">{{ __('Saved.') }}</p>
+                                @endif
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+    </div>
+
+    <script>
+        document.getElementById('csvFile').addEventListener('change', function() {
+            const form = document.getElementById('csvUploadForm');
+            form.dispatchEvent(new Event('submit', {
+                bubbles: true,
+                cancelable: true
+            }));
+        });
+        document.getElementById('csvUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const loadingElement = document.getElementById('make-template');
+            const dataId = document.getElementById('id');
+            const dataName = document.getElementById('name');
+            const statusContainer = document.querySelector('.status-container');
+            loadingElement.classList.remove('hidden');
+            
+            fetch("{{ route('upload.template') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.results) {
+                        dataId.value = data.results.id;
+                        dataName.value = data.results.name;
+                        statusContainer.innerHTML = `<p class="text-sm text-gray-600 fade-out">Uploaded.</p>`;
+                        setTimeout(() => {
+                            statusContainer.innerHTML = '';
+                        }, 1000);
+                    } else {
+                        alert('Failed to extract data: ' + data.results);
+                    }
+                })
+                .catch(error => {
+                    loadingElement.classList.add('hidden');
+                    alert('An error occurred. Please try again.');
+                    console.error(error);
+                });
+        });
+    </script>
+
+    <div class="py-1">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <section>
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900">
+                                {{ __('Templates List') }}
+                            </h2>
+
+                            <p class="mt-1 text-sm text-gray-600">
+                                {{ __('Below you\'ll find a list of all the templates.') }}
                             </p>
                         </header>
 
@@ -34,38 +166,33 @@
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Date') }}
+                                            {{ __('Modified Date') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Information') }}
+                                            {{ __('ID') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {{ __('Status') }}
                                         </th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Esign') }}
-                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="dataTableBody" class="bg-white divide-y divide-gray-200">
-                                    @foreach ($agreements['userAgreementList'] as $index => $agreement)
-                                        <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $index + 1 }}</td>
-                                             <td class="px-6 py-4 whitespace-nowrap">{{ $agreement['name'] }}</td>
-                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                {{ $agreement['displayDate'] }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                {{ $agreement['displayParticipantSetInfos'][0]['displayUserSetMemberInfos'][0]['fullName'] }}
-                                                ({{ $agreement['displayParticipantSetInfos'][0]['displayUserSetMemberInfos'][0]['email'] }})
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">{{ $agreement['status'] }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                {{ $agreement['esign'] ? 'True' : 'False' }}</td>
-                                        </tr>
-                                    @endforeach
+                                    @if (array_key_exists('libraryDocumentList',$templates))
+                                        @foreach ($templates['libraryDocumentList'] as $index => $template)
+                                            <tr>
+                                                <td class="px-6 text-sm py-4 whitespace-nowrap">{{ $index + 1 }}</td>
+                                                <td class="px-6 text-sm py-4 whitespace-nowrap">{{ $template['name'] }}</td>
+                                                <td class="px-6 text-sm py-4 whitespace-nowrap">
+                                                    {{ $template['modifiedDate'] }}</td>
+                                                <td class="px-6 text-sm py-4 whitespace-nowrap">
+                                                    {{ $template['id'] }}
+                                                </td>
+                                                <td class="px-6 text-sm py-4 whitespace-nowrap">{{ $template['status'] }}</td>
+                                            </tr>
+                                        @endforeach
+                                    @endif
                                 </tbody>
                             </table>
 
@@ -75,6 +202,7 @@
             </div>
         </div>
     </div>
+    <br>
 
     <!-- DataTables CSS & JS -->
     @push('styles')

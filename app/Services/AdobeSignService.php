@@ -17,7 +17,7 @@ class AdobeSignService
         $this->client = new Client();
     }
 
-    public function sendAgreement($templateId, $recipients, $documentName)
+    public function sendAgreement($templateId, $recipients, $documentName, $data1, $data2)
     {
         $this->apiKey = session()->get('ADOBESIGN_ACCESS_TOKEN');
         $response = $this->client->post('https://secure.na4.adobesign.com/api/rest/v6/agreements', [
@@ -290,24 +290,34 @@ class AdobeSignService
             'json' => [
                 'participantSetsInfo' => [
                     [
-                        'role' => 'SIGNER',  // Define the role for the recipient
+                        'role' => 'SIGNER',
                         'order' => 1,
                         "deliverableEmail" => true,
                         'memberInfos' => [
                             [
-                                'email' => $recipients, // Recipient email
+                                'email' => $recipients,
                             ],
                         ],
                     ],
                 ],
-                'name' => $documentName, // Document name
-                'signatureType' => 'ESIGN', // Signature type, assuming e-signature
+                'name' => $documentName,
+                'signatureType' => 'ESIGN',
                 'fileInfos' => [
                     [
-                        'libraryDocumentId' => $templateId, // Reference to the document in the library
+                        'libraryDocumentId' => $templateId,
                     ],
                 ],
-                'state' => 'IN_PROCESS', // Initial state of the agreement
+                'mergeFieldInfo' => [
+                    [
+                        'fieldName' => 'data1',
+                        'defaultValue' => $data1,
+                    ],
+                    [
+                        'fieldName' => 'data2',
+                        'defaultValue' => $data2,
+                    ],
+                ],
+                'state' => 'IN_PROCESS',
             ],
         ]);
 

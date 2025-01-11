@@ -2393,7 +2393,7 @@ a {
   text-decoration: none;
   border: 2px solid var(--black);
   border-radius: 0.375rem;
-  padding: 0.8125rem 2rem;
+  padding: 0.512rem 4rem;
   margin: 0 0;
   display: inline-block;
   overflow: hidden;
@@ -2421,7 +2421,7 @@ a {
   box-shadow: none !important;
 }
 .btn-red:hover {
-  color: var(--brand);
+  color: rgb(255 255 255 / 1);
   background: var(--black);
   border-color: var(--black);
 }
@@ -3265,7 +3265,7 @@ textarea:focus {
 }
 .navbar .right-nav a {
   font-family: "Inter", sans-serif;
-  font-size: 17px;
+  font-size: 1em;
   font-weight: 500;
   line-height: 27px;
   color: #171717;
@@ -3277,11 +3277,11 @@ textarea:focus {
   margin-left: 0;
 }
 .navbar .right-nav .btn {
-  border-radius: 5px;
-  padding: 10.5px 2rem;
-  font-family: "Inter", sans-serif;
-  font-size: 17px;
-  font-weight: 700;
+    border-radius: 5px;
+    padding: 0.312rem 1.5rem;
+    font-family: "Inter", sans-serif;
+    font-size: 1em;
+    font-weight: 700;
 }
 .navbar .navbar-collapse.show .right-nav .nice-select {
   color: var(--black);
@@ -3351,7 +3351,7 @@ textarea:focus {
 }
 .menu_two .right-nav .btn:hover {
   background-color: transparent;
-  color: var(--brand-3);
+  color: rgb(255 255 255 / 1);
   border-color: var(--brand-3);
 }
 
@@ -9194,7 +9194,7 @@ Why-choose CSS
   border: none;
 }
 .menu_three .right-nav .btn-red:hover {
-  color: var(--brand);
+  color: rgb(255 255 255 / 1);
 }
 
 .banner-area-4 {
