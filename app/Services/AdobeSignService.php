@@ -17,7 +17,7 @@ class AdobeSignService
         $this->client = new Client();
     }
 
-    public function sendAgreement($templateId, $recipients, $documentName, $data1, $data2)
+    public function sendAgreement($templateId, $recipients, $documentName, $vendor, $fullName, $bankName, $ibanAed, $ibanUsd, $ibanEur, $swiftCode, $Address, $telephone, $project, $fullAmount)
     {
         $this->apiKey = session()->get('ADOBESIGN_ACCESS_TOKEN');
         $response = $this->client->post('https://secure.na4.adobesign.com/api/rest/v6/agreements', [
@@ -318,12 +318,48 @@ class AdobeSignService
                 ],
                 'mergeFieldInfo' => [
                     [
-                        'fieldName' => 'data1',
-                        'defaultValue' => $data1,
+                        'fieldName' => 'vendor',
+                        'defaultValue' => $vendor,
                     ],
                     [
-                        'fieldName' => 'data2',
-                        'defaultValue' => $data2,
+                        'fieldName' => 'full_name',
+                        'defaultValue' => $fullName,
+                    ],
+                    [
+                        'fieldName' => 'bank_name',
+                        'defaultValue' => $bankName,
+                    ],
+                    [
+                        'fieldName' => 'iban_aed',
+                        'defaultValue' => $ibanAed,
+                    ],
+                    [
+                        'fieldName' => 'iban_usd',
+                        'defaultValue' => $ibanUsd,
+                    ],
+                    [
+                        'fieldName' => 'iban_eur',
+                        'defaultValue' => $ibanEur,
+                    ],
+                    [
+                        'fieldName' => 'swift_code',
+                        'defaultValue' => $swiftCode,
+                    ],
+                    [
+                        'fieldName' => 'address',
+                        'defaultValue' => $Address,
+                    ],
+                    [
+                        'fieldName' => 'telephone',
+                        'defaultValue' => $telephone,
+                    ],
+                    [
+                        'fieldName' => 'project',
+                        'defaultValue' => $project,
+                    ],
+                    [
+                        'fieldName' => 'full_amount',
+                        'defaultValue' => $fullAmount,
                     ],
                 ],
                 'state' => 'IN_PROCESS',

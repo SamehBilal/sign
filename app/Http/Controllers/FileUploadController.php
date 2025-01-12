@@ -21,11 +21,18 @@ class FileUploadController extends Controller
         foreach ($csvData as $index => $row) {
             if ($index === 0) continue;
             $talents[] = [
-                'name' => $row[0],
-                'email' => $row[1],
-                'bank_account' => $row[2],
-                'data1' => $row[3],
-                'data2' => $row[4]
+                'vendor'        => $row[0],
+                'email'         => $row[1],
+                'full_name'     => $row[2],
+                'bank_name'     => $row[3],
+                'iban_aed'      => $row[4],
+                'iban_usd'      => $row[5],
+                'iban_eur'      => $row[6],
+                'swift_code'    => $row[7],
+                'address'       => $row[8],
+                'telephone'     => $row[9],
+                'project'       => $row[10],
+                'full_amount'   => $row[11]
             ];
             /* Talent::updateOrCreate(
                 ['email' => $row[1]], // Assuming email is unique

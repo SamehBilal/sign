@@ -6,17 +6,17 @@
     </x-slot>
 
     @if (session('status') == 'Agreements sent successfully!')
-    <div class="py-4">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-3 text-gray-900">
-                    <div class="font-medium text-green-600">
-                        {{ __('Agreements sent successfully!') }}
+        <div class="py-4">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-3 text-gray-900">
+                        <div class="font-medium text-green-600">
+                            {{ __('Agreements sent successfully!') }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     @endif
 
     <div class="py-12">
@@ -113,6 +113,10 @@
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Vendor') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                     {{ __('Name') }}
                                                 </th>
                                                 <th
@@ -121,15 +125,39 @@
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('Bank Account') }}
+                                                    {{ __('Bank Name') }}
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('Data 1') }}
+                                                    {{ __('IBAN AED') }}
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('Data 2') }}
+                                                    {{ __('IBAN USD') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('IBAN EURO') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Swift Code') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Address') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Telephone') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Project') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Full Amount') }}
                                                 </th>
                                             </tr>
                                         </thead>
@@ -181,13 +209,20 @@
                                         const row = `<tr>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${index + 1}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                                            <input type="checkbox" name="selected[]" value="${index}" data-name="${item.name}" data-email="${item.email}" data-bank-account="${item.bank_account}" data-data1="${item.data1}" data-data2="${item.data2}">
+                                                            <input type="checkbox" name="selected[]" value="${index}" data-vendor="${item.vendor}" data-full_name="${item.full_name}" data-email="${item.email}" data-bank_name="${item.bank_name}" data-iban_aed="${item.iban_aed}" data-iban_usd="${item.iban_usd}" data-iban_eur="${item.iban_eur}" data-swift_code="${item.swift_code}" data-address="${item.address}" data-telephone="${item.telephone}" data-project="${item.project}" data-full_amount="${item.full_amount}">
                                                         </td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.name}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.vendor}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.full_name}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.email}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.bank_account}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.data1}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.data2}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.bank_name}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.iban_aed}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.iban_usd}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.iban_eur}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.swift_code}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.address}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.telephone}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.project}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.full_amount}</td>
                                                     </tr>`;
                                         dataTableBody.insertAdjacentHTML('beforeend', row);
                                     });
@@ -218,11 +253,18 @@
                         const agreements = [];
                         selectedRows.forEach((row) => {
                             agreements.push({
-                                name: row.dataset.name,
+                                vendor: row.dataset.vendor,
+                                full_name: row.dataset.full_name,
                                 email: row.dataset.email,
-                                bank_account: row.dataset.bankAccount,
-                                data1: row.dataset.data1,
-                                data2: row.dataset.data2,
+                                bank_name: row.dataset.bank_name,
+                                iban_aed: row.dataset.iban_aed,
+                                iban_usd: row.dataset.iban_usd,
+                                iban_eur: row.dataset.iban_eur,
+                                swift_code: row.dataset.swift_code,
+                                address: row.dataset.address,
+                                telephone: row.dataset.telephone,
+                                project: row.dataset.project,
+                                full_amount: row.dataset.full_amount,
                             });
                         });
 
