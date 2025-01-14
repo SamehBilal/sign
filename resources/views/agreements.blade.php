@@ -32,10 +32,23 @@
                             </div>
                             <div class="flex items-center gap-4">
                                 <div class="flex items-center gap-4 status-container"></div>
-                                {{-- <x-primary-button>{{ __('Upload') }}</x-primary-button> --}}
                                 @if (session('status') === 'template-updated')
                                     <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
                                         class="text-sm text-gray-600">{{ __('Saved.') }}</p>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            Toastify({
+                                                text: "{{ __('Agreement sent successfully!') }}",
+                                                duration: 3000,
+                                                close: true,
+                                                gravity: "bottom",
+                                                position: "center",
+                                                backgroundColor: "rgb(31 41 55 / 1)",
+                                                stopOnFocus: true,
+                                                className: "rounded-toast",
+                                            }).showToast();
+                                        });
+                                    </script>
                                 @endif
                             </div>
                         </form>
@@ -82,8 +95,6 @@
                                     :value="old('id')" />
                                 <x-input-error class="mt-2" :messages="$errors->get('id')" />
                             </div>
-
-                            {{-- <div class="flex items-center gap-4 status-container"></div> --}}
                             <div class="flex items-center gap-4">
                                 <x-primary-button>{{ __('Save') }}</x-primary-button>
                                 @if (session('status') === 'template-updated')
@@ -133,6 +144,16 @@
                         setTimeout(() => {
                             statusContainer.innerHTML = '';
                         }, 1000);
+                        Toastify({
+                            text: "{{ __('File uploaded successfully!') }}",
+                            duration: 3000,
+                            close: true,
+                            gravity: "bottom",
+                            position: "center",
+                            backgroundColor: "rgb(31 41 55 / 1)",
+                            stopOnFocus: true,
+                            className: "rounded-toast",
+                        }).showToast();
                     } else {
                         alert('Failed to extract data: ' + data.results);
                     }
@@ -174,11 +195,7 @@
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('ID') }}
-                                        </th>
-                                        <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            {{ __('Date') }}
+                                            {{ __('Modified date') }}
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -203,8 +220,6 @@
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
                                                     {{ $agreement['name'] }}</td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
-                                                    {{ $agreement['id'] }}</td>
-                                                <td class="px-6 text-sm py-4 whitespace-nowrap">
                                                     {{ $agreement['displayDate'] }}</td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
                                                     {{ $agreement['displayParticipantSetInfos'][0]['displayUserSetMemberInfos'][0]['fullName'] }}
@@ -214,10 +229,15 @@
                                                     {{ $agreement['status'] }}</td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
                                                     <div class="flex items-center space-x-2">
+                                                        <button x-data=""
+                                                            @click="window.openAgreementModal('{{ $agreement['id'] }}')"
+                                                            class="text-gray-600 hover:text-gray-800">
+                                                            <x-icon-view />
+                                                        </button>
                                                         <button
-                                                            @click="openAgreementModal({{ $agreement['id'] }}); $dispatch('open-modal', { name: 'open-modal' })"
-                                                            class="text-blue-600 hover:text-blue-800">
-                                                            <x-icon-pencil />
+                                                            @click="window.openAgreementEventsModal('{{ $agreement['id'] }}')"
+                                                            class="text-gray-600 hover:text-gray-800">
+                                                            <x-icon-calendar />
                                                         </button>
                                                     </div>
                                                 </td>
@@ -235,7 +255,59 @@
     </div>
     <br>
 
-    <x-modal :name="'open-modal'" :show="false"></x-modal>
+    <x-modal :name="'agreement-data-modal'" :show="false" focusable lg>
+        <div class="p-6">
+
+            <h2 class="text-lg font-medium text-gray-900">
+                {{ __('Agreement Data') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600">
+                {{ __('Below you will find all the details of the agreement.') }}
+            </p>
+
+            <div class="mt-6" id="agreement-data">
+
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+
+                <x-primary-button class="ms-3" x-on:click="$dispatch('close')">
+                    {{ __('OK') }}
+                </x-primary-button>
+            </div>
+        </div>
+    </x-modal>
+
+    <x-modal :name="'agreement-events-modal'" :show="false" focusable lg>
+        <div class="p-6">
+
+            <h2 class="text-lg font-medium text-gray-900">
+                {{ __('Agreement Events Data') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600">
+                {{ __('Below you will find all the details of the events the agreement.') }}
+            </p>
+
+            <div class="mt-6" id="agreement-events-data">
+
+            </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+
+                <x-primary-button class="ms-3" x-on:click="$dispatch('close')">
+                    {{ __('OK') }}
+                </x-primary-button>
+            </div>
+        </div>
+    </x-modal>
 
     <!-- DataTables CSS & JS -->
     @push('styles')
@@ -294,7 +366,7 @@
                         [0, 'asc']
                     ],
                     columnDefs: [{
-                        targets: [3], // Index of the Published At column
+                        targets: [2],
                         render: function(data) {
                             if (data) {
                                 const localDate = new Date(data).toLocaleDateString(undefined, {
@@ -306,11 +378,11 @@
                                 });
                                 return localDate;
                             }
-                            return 'N/A'; // If data is null or undefined
+                            return 'N/A';
                         }
                     }],
-                    lengthMenu: [5, 10, 25, 50, 100], // Customize "Per Page" options
-                    pageLength: 10, // Default number of entries per page
+                    lengthMenu: [5, 10, 25, 50, 100],
+                    pageLength: 10,
                     language: {
                         search: "Search:",
                         lengthMenu: "Show _MENU_ ",
@@ -320,7 +392,6 @@
                         infoFiltered: "(filtered from _MAX_ total records)"
                     },
                     initComplete: function() {
-                        // Apply custom classes to the per-page select dropdown and pagination controls
                         $('.dataTables_length select').addClass(
                             'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm'
                         );
@@ -339,7 +410,9 @@
         </script>
 
         <script>
-            function openAgreementModal(id) {
+            window.openAgreementModal = function(id) {
+                const dataModalBody = document.getElementById('agreement-data');
+                dataModalBody.innerHTML = '';
                 fetch(`/agreements/${id}`, {
                         method: 'POST',
                         headers: {
@@ -350,7 +423,168 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        alert(data)
+                        if (data) {
+                            let tableHTML = `
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Field</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                            `;
+                            Object.entries(data).forEach(([key, value]) => {
+                                if (key === 'participantSetsInfo' && Array.isArray(value)) {
+                                    let nestedTable = ``;
+
+                                    value.forEach((participant) => {
+                                        let memberInfosHTML = participant.memberInfos
+                                            .map((member) => `
+                                                    <strong>Name:</strong> ${member.name}<br><hr>
+                                                    <strong>Email:</strong> ${member.email}<br><hr>
+                                                    <strong>Deliverable Email:</strong> ${member.deliverableEmail}<br><hr>
+                                                    <strong>Authentication Method:</strong> ${member.securityOption.authenticationMethod}
+                                            `)
+                                            .join('<hr>');
+                                        nestedTable += `
+                                        <tr>
+
+                                            <td class="px-6 py-4 text-sm text-gray-900">
+                                                <strong>Role:</strong> ${participant.role}<br><hr>
+                                                <strong>Order:</strong> ${participant.order}<br><hr>
+                                                ${memberInfosHTML}
+                                            </td>
+                                        </tr>`;
+                                    });
+
+                                    nestedTable += ``;
+
+                                    tableHTML += `
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">${key}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            <table class="min-w-full divide-y divide-gray-200">
+                                                <tbody class="bg-white divide-y divide-gray-200">
+                                                    ${nestedTable}
+                                                    </tbody>
+                                                </table>
+                                        </td>
+                                    </tr>`;
+                                } else if (key === 'agreementSettingsInfo') {
+                                    let settingsHTML = Object.entries(value)
+                                        .map(([subKey, subValue]) =>
+                                            `<strong>${subKey}:</strong> ${subValue}<br>`)
+                                        .join('');
+                                    tableHTML += `
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">${key}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">${settingsHTML}</td>
+                                    </tr>`;
+                                } else {
+                                    const displayValue =
+                                        typeof value === 'object' ?
+                                        JSON.stringify(value, null, 2) :
+                                        value;
+
+                                    tableHTML += `
+                                    <tr>
+                                        <td class="px-6 py-4 text-sm text-gray-900">${key}</td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            <pre>${displayValue}</pre>
+                                        </td>
+                                    </tr>`;
+                                }
+                            });
+                            tableHTML += `
+                                    </tbody>
+                                </table>`;
+                            dataModalBody.innerHTML = tableHTML;
+                            const modalName = 'agreement-data-modal';
+                            window.dispatchEvent(new CustomEvent('open-modal', {
+                                detail: modalName
+                            }));
+                        } else {
+                            Toastify({
+                                text: "{{ __('Failed to extract data') }}",
+                                duration: 3000,
+                                close: true,
+                                gravity: "bottom",
+                                position: "center",
+                                backgroundColor: "rgb(31 41 55 / 1)",
+                                stopOnFocus: true,
+                                className: "rounded-toast",
+                            }).showToast();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching agreement data:', error);
+                        const detailsDiv = document.getElementById('agreementDetails');
+                        detailsDiv.innerHTML = `<p>Error loading agreement data.</p>`;
+                    });
+            };
+
+            window.openAgreementEventsModal = function(id) {
+                fetch(`/agreements/${id}/events`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const dataModalBody = document.getElementById('agreement-events-data');
+                        dataModalBody.innerHTML = '';
+
+                        if (data && data.events && Array.isArray(data.events)) {
+                            let timelineHTML = `<div class="space-y-4">`;
+
+                            data.events.forEach(event => {
+                                timelineHTML += `
+                                <div class="relative pb-8">
+                                    <div class="mt-4 sm:ml-10 sm:flex sm:items-start">
+                                        <div class="ml-4">
+                                            <h2 class="text-sm font-medium text-gray-900">${event.type}</h2>
+                                             <div class="text-sm text-gray-500">
+                                                <strong>Action:</strong> ${event.type}
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                <strong>Acting User:</strong> ${event.actingUserName} (${event.actingUserEmail})
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                <strong>Date:</strong> ${new Date(event.date).toLocaleString()}
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                <strong>Description:</strong> ${event.description}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            });
+
+                            timelineHTML += `</div>`;
+                            dataModalBody.innerHTML = timelineHTML;
+
+                            // Open modal
+                            const modalName = 'agreement-events-modal';
+                            window.dispatchEvent(new CustomEvent('open-modal', {
+                                detail: modalName
+                            }));
+                        } else {
+                            Toastify({
+                                text: "No events found for this agreement.",
+                                duration: 3000,
+                                close: true,
+                                gravity: "bottom",
+                                position: "center",
+                                backgroundColor: "rgb(31 41 55 / 1)",
+                                stopOnFocus: true,
+                                className: "rounded-toast",
+                            }).showToast();
+                        }
                     })
                     .catch(error => {
                         console.error('Error fetching agreement data:', error);

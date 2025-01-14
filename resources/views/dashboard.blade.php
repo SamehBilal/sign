@@ -13,7 +13,7 @@
                     duration: 3000,
                     close: true,
                     gravity: "bottom",
-                    position: "right",
+                    position: "center",
                     backgroundColor: "rgb(31 41 55 / 1)",
                     stopOnFocus: true,
                     className: "rounded-toast",
@@ -49,13 +49,6 @@
                             </div>
 
                             <div class="flex items-center gap-4 status-container"></div>
-                            {{-- <div class="flex items-center gap-4">
-                                <x-primary-button>{{ __('Upload') }}</x-primary-button>
-                                @if (session('status') === 'profile-updated')
-                                    <p x-data="{ show: true }" x-show="show" x-transition x-init="setTimeout(() => show = false, 2000)"
-                                        class="text-sm text-gray-600">{{ __('Uploaded.') }}</p>
-                                @endif
-                            </div> --}}
                         </form>
                     </section>
                 </div>
@@ -86,7 +79,6 @@
                             <form id="bulkSendForm" method="POST" action="{{ route('send.bulk.agreements') }}">
                                 @csrf
 
-                                <!-- Template Selection Dropdown -->
                                 <div class="mb-4">
                                     <x-input-label for="template" :value="__('Select Template')" />
                                     <select id="template" name="template_id"
@@ -231,17 +223,44 @@
                                     });
                                     dataSection.classList.remove('hidden');
                                     statusContainer.innerHTML = `<p class="text-sm text-gray-600 fade-out">Uploaded.</p>`;
+                                    Toastify({
+                                        text: "{{ __('File uploaded successfully') }}",
+                                        duration: 3000,
+                                        close: true,
+                                        gravity: "bottom",
+                                        position: "center",
+                                        backgroundColor: "rgb(31 41 55 / 1)",
+                                        stopOnFocus: true,
+                                        className: "rounded-toast",
+                                    }).showToast();
                                     setTimeout(() => {
                                         statusContainer.innerHTML = '';
                                     }, 1000);
                                 } else {
-                                    alert('Failed to extract data: ' + data.results);
+                                    Toastify({
+                                        text: "{{ __('Failed to extract data') }}",
+                                        duration: 3000,
+                                        close: true,
+                                        gravity: "bottom",
+                                        position: "center",
+                                        backgroundColor: "rgb(31 41 55 / 1)",
+                                        stopOnFocus: true,
+                                        className: "rounded-toast",
+                                    }).showToast();
                                 }
                             })
                             .catch(error => {
                                 loadingElement.classList.add('hidden');
-                                alert('An error occurred. Please try again.');
-                                console.error(error);
+                                Toastify({
+                                    text: "{{ __('An error occurred. Please try again.') }}",
+                                    duration: 3000,
+                                    close: true,
+                                    gravity: "bottom",
+                                    position: "center",
+                                    backgroundColor: "rgb(31 41 55 / 1)",
+                                    stopOnFocus: true,
+                                    className: "rounded-toast",
+                                }).showToast();
                             });
                     });
 
@@ -249,7 +268,16 @@
                         const selectedRows = document.querySelectorAll('#dataTableBody input[name="selected[]"]:checked');
                         if (selectedRows.length === 0) {
                             e.preventDefault();
-                            alert('Please select at least one user.');
+                            Toastify({
+                                text: "{{ __('Please select at least one user.') }}",
+                                duration: 3000,
+                                close: true,
+                                gravity: "bottom",
+                                position: "center",
+                                backgroundColor: "rgb(31 41 55 / 1)",
+                                stopOnFocus: true,
+                                className: "rounded-toast",
+                            }).showToast();
                             return;
                         }
 

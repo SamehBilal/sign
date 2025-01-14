@@ -45,19 +45,8 @@ class AdobeSignController extends Controller
             return response()->json(['message' => 'Invalid agreements data'], 400);
         }
 
-        // Filter agreements based on selected IDs
-        /* $selectedAgreements = collect($agreements)->filter(function ($agreement, $index) use ($validated) {
-            return in_array($index, $validated['selected']);
-        });
-
-        if ($selectedAgreements->isEmpty()) {
-            return response()->json(['message' => 'No agreements found for the selected IDs'], 400);
-        } */
-
         foreach ($agreements  as $agreement) {
             try {
-                //return response()->json(['message' => "Sending agreement to {$agreement['email']} for {$agreement['document_name']}"], 200);
-
                 $this->adobeSignService->sendAgreement(
                     $request->input('template_id'),
                     $agreement['email'],
@@ -86,11 +75,5 @@ class AdobeSignController extends Controller
     {
         $status = $this->adobeSignService->getAgreementStatus($agreementId);
         return response()->json($status);
-    }
-
-    public function cancelAgreement($agreementId)
-    {
-        $result = $this->adobeSignService->cancelAgreement($agreementId);
-        return response()->json($result);
     }
 }

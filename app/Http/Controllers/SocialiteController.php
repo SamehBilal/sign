@@ -11,6 +11,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Carbon\Carbon;
 
 class SocialiteController extends Controller
 {
@@ -36,6 +37,7 @@ class SocialiteController extends Controller
             $accessToken = $responseData['access_token'];
             $refreshToken = $responseData['refresh_token'];
             $expiresIn = $response['expires_in'];
+            $token_expiration_time = Carbon::now()->timestamp + $expiresIn;
             $client = new Client();
             $response = $client->get('https://api.na4.adobesign.com/api/rest/v6/users/me', [
                 'headers' => [
@@ -48,11 +50,9 @@ class SocialiteController extends Controller
 
                 session([
                     'ADOBESIGN_ACCESS_TOKEN' => $accessToken,
-                    'ADOBESIGN_TOKEN_EXPIRES_AT' => now()->addSeconds($expiresIn)
                 ]);
 
                 Cache::put('ADOBESIGN_ACCESS_TOKEN', $accessToken, now()->addSeconds($expiresIn));
-                Cache::put('ADOBESIGN_TOKEN_EXPIRES_AT', now()->addSeconds($expiresIn), now()->addSeconds($expiresIn));
 
                 $user = json_decode($response->getBody(), true);
                 $email = $user['email'];
@@ -66,7 +66,7 @@ class SocialiteController extends Controller
                         'name' => $firstName . ' ' . $lastName,
                         'adobe_id' => $adobeId,
                         'access_token' => $accessToken,
-                        'expires_in' => $expiresIn,
+                        'expires_in' => $token_expiration_time,
                         'refresh_token' => $refreshToken,
                         'password' => '$2y$12$pWmzu/cyKUq0xrJenDJmxeS/KJOLHRZ8ZgaywILSGGqhh5mDXNieu',
                     ]

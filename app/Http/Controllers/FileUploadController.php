@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Talent;
 use Illuminate\Support\Facades\Storage;
-use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
 
 class FileUploadController extends Controller
@@ -34,16 +32,8 @@ class FileUploadController extends Controller
                 'project'       => $row[10],
                 'full_amount'   => $row[11]
             ];
-            /* Talent::updateOrCreate(
-                ['email' => $row[1]], // Assuming email is unique
-                [
-                    'name' => $row[0],
-                    'bank_account' => $row[2],
-                ]
-            ); */
         }
         return response()->json(['results' => $talents]);
-        //return response()->json(['message' => 'File uploaded and parsed successfully']);
     }
 
     public function uploadTemplate(Request $request)

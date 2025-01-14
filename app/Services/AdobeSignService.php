@@ -366,16 +366,4 @@ class AdobeSignService
         $response = $this->client->get("/agreements/{$agreementId}");
         return json_decode($response->getBody()->getContents(), true);
     }
-
-    // Cancel Agreement
-    public function cancelAgreement($agreementId)
-    {
-        $response = $this->client->put("/agreements/{$agreementId}/state", [
-            'json' => [
-                'state' => 'CANCELLED',
-            ],
-        ]);
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
 }
