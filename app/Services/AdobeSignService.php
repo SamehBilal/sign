@@ -291,15 +291,6 @@ class AdobeSignService
                 "signatureFlow"=> "SENDER_SIGNATURE_NOT_REQUIRED",
                 'participantSetsInfo' => [
                     [
-                        'role' => 'APPROVER',
-                        'order' => 2,
-                        'memberInfos' => [
-                            [
-                                'email' => 'sameh@ar-ad.com',
-                            ],
-                        ],
-                    ],
-                    [
                         'role' => 'SIGNER',
                         'order' => 1,
                         'memberInfos' => [

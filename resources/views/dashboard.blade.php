@@ -6,17 +6,20 @@
     </x-slot>
 
     @if (session('status') == 'Agreements sent successfully!')
-        <div class="py-4">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-3 text-gray-900">
-                        <div class="font-medium text-green-600">
-                            {{ __('Agreements sent successfully!') }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Toastify({
+                    text: "{{ __('Agreements sent successfully!') }}",
+                    duration: 3000,
+                    close: true,
+                    gravity: "bottom",
+                    position: "right",
+                    backgroundColor: "rgb(31 41 55 / 1)",
+                    stopOnFocus: true,
+                    className: "rounded-toast",
+                }).showToast();
+            });
+        </script>
     @endif
 
     <div class="py-12">
@@ -34,8 +37,8 @@
                             </p>
                         </header>
 
-                        <form method="POST" id="csvUploadForm" class="mt-6 space-y-6"
-                            action="{{ route('upload.csv') }}" enctype="multipart/form-data">
+                        <form method="POST" id="csvUploadForm" class="mt-6 space-y-6" action="{{ route('upload.csv') }}"
+                            enctype="multipart/form-data">
                             @csrf
                             <div>
                                 <x-input-label for="csvFile" :value="__('Select CSV File:')" />
@@ -117,6 +120,10 @@
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Project') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                     {{ __('Name') }}
                                                 </th>
                                                 <th
@@ -150,10 +157,6 @@
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                     {{ __('Telephone') }}
-                                                </th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('Project') }}
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -212,6 +215,7 @@
                                                             <input type="checkbox" name="selected[]" value="${index}" data-vendor="${item.vendor}" data-full_name="${item.full_name}" data-email="${item.email}" data-bank_name="${item.bank_name}" data-iban_aed="${item.iban_aed}" data-iban_usd="${item.iban_usd}" data-iban_eur="${item.iban_eur}" data-swift_code="${item.swift_code}" data-address="${item.address}" data-telephone="${item.telephone}" data-project="${item.project}" data-full_amount="${item.full_amount}">
                                                         </td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.vendor}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.project}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.full_name}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.email}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.bank_name}</td>
@@ -221,7 +225,6 @@
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.swift_code}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.address}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.telephone}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.project}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.full_amount}</td>
                                                     </tr>`;
                                         dataTableBody.insertAdjacentHTML('beforeend', row);

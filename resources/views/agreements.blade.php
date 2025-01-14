@@ -188,6 +188,10 @@
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             {{ __('Status') }}
                                         </th>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            {{ __('Action') }}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="dataTableBody" class="bg-white divide-y divide-gray-200">
@@ -208,6 +212,15 @@
                                                 </td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
                                                     {{ $agreement['status'] }}</td>
+                                                <td class="px-6 text-sm py-4 whitespace-nowrap">
+                                                    <div class="flex items-center space-x-2">
+                                                        <button
+                                                            @click="openAgreementModal({{ $agreement['id'] }}); $dispatch('open-modal', { name: 'open-modal' })"
+                                                            class="text-blue-600 hover:text-blue-800">
+                                                            <x-icon-pencil />
+                                                        </button>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif
@@ -221,6 +234,8 @@
         </div>
     </div>
     <br>
+
+    <x-modal :name="'open-modal'" :show="false"></x-modal>
 
     <!-- DataTables CSS & JS -->
     @push('styles')
@@ -308,19 +323,41 @@
                         // Apply custom classes to the per-page select dropdown and pagination controls
                         $('.dataTables_length select').addClass(
                             'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm'
-                            );
+                        );
                         $('.dataTables_length label').addClass('block font-medium text-sm text-gray-700');
                         $('.dataTables_filter label').addClass('block font-medium text-sm text-gray-700');
                         $('.dataTables_filter input').addClass(
                             'border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm'
-                            );
+                        );
                         $('.dataTables_paginate').addClass('flex space-x-2 mt-4');
                         $('.dataTables_paginate a').addClass(
                             'inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150'
-                            );
+                        );
                     }
                 });
             });
+        </script>
+
+        <script>
+            function openAgreementModal(id) {
+                fetch(`/agreements/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data)
+                    })
+                    .catch(error => {
+                        console.error('Error fetching agreement data:', error);
+                        const detailsDiv = document.getElementById('agreementDetails');
+                        detailsDiv.innerHTML = `<p>Error loading agreement data.</p>`;
+                    });
+            };
         </script>
     @endpush
 </x-app-layout>

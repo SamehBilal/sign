@@ -68,6 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/templates', [LibraryController::class, 'index'])->name('templates.index');
     Route::post('/templates', [LibraryController::class, 'store'])->name('templates.store');
     Route::post('/agreements', [AgreementController::class, 'store'])->name('agreements.store');
+    Route::post('/agreements/{id}', [AgreementController::class, 'show'])->name('agreements.show');
     Route::get('/talents', [TalentController::class, 'index'])->name('talents.index');
     Route::post('/send-bulk-agreements', [AdobeSignController::class, 'sendBulkAgreements'])->name('send.bulk.agreements');
     Route::get('/agreement-status/{agreementId}', [AdobeSignController::class, 'checkAgreementStatus']);

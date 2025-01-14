@@ -48,13 +48,37 @@ class AgreementController extends Controller
             return view('agreements', compact('agreements'));
         } catch (ClientException $e) {
             if ($e->getResponse()->getStatusCode() === 401) {
-                return redirect()->route('adobe.login'); 
+                return redirect()->route('adobe.login');
             }
 
             return back()->withErrors(['message' => 'Something went wrong. Please try again.']);
         }
     }
 
+    public function show($id)
+    {
+        $apiKey = session()->get('ADOBESIGN_ACCESS_TOKEN');
+        $client = new Client();
+
+        try {
+            $response = $client->get('https://secure.na4.adobesign.com/api/rest/v6/agreements/'.$id, [
+                'headers' => [
+                    'Authorization' => "Bearer {$apiKey}",
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+
+            $agreements = json_decode($response->getBody()->getContents(), true);
+
+            return view('agreements', compact('agreements'));
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 401) {
+                return redirect()->route('adobe.login');
+            }
+
+            return back()->withErrors(['message' => 'Something went wrong. Please try again.']);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -97,10 +121,10 @@ class AgreementController extends Controller
                 ],
                 "state" => "AUTHORING",
                 "status" => "AUTHORING",
-                "isDocumentRetentionApplied" => true,  
-                "createdDate" => now()->toDateString(), 
-                "modifiedDate" => now()->toDateString(), 
-                "lastEventDate" => now()->toDateString(), 
+                "isDocumentRetentionApplied" => true,
+                "createdDate" => now()->toDateString(),
+                "modifiedDate" => now()->toDateString(),
+                "lastEventDate" => now()->toDateString(),
             ]
         ]);
 
@@ -141,7 +165,7 @@ class AgreementController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Agreement $agreement)
+    public function shows(Agreement $agreement)
     {
         //
     }
