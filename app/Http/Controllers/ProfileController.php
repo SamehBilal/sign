@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -52,9 +53,11 @@ class ProfileController extends Controller
             'refresh_token' => $request->refresh_token,
         ]);
 
+
         $responseData = $response->json();
+        $token_expiration_time = Carbon::now()->timestamp + $responseData['expires_in'];
         $request->user()->access_token  = $responseData['access_token'];
-        $request->user()->expires_in    = $responseData['expires_in'];
+        $request->user()->expires_in    = $token_expiration_time;
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
