@@ -370,10 +370,11 @@
                     }
 
                     window.openDocumentModal = function(id, event, callback) {
+                        const url = `{{ route('templates.file', ['id' => '__id__']) }}`.replace('__id__', id);
                         const dataModalBody = document.getElementById('document-content');
                         const button = event.currentTarget;
                         dataModalBody.innerHTML = ''; // Clear previous content
-                        fetch(`/templates/${id}/file`, {
+                        fetch(url, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
