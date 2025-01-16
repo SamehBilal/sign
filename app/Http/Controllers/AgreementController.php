@@ -203,6 +203,31 @@ class AgreementController extends Controller
         }
     }
 
+    public function file($id)
+    {
+        $apiKey = session()->get('ADOBESIGN_ACCESS_TOKEN');
+        $client = new Client();
+
+        try {
+            $response = $client->get('https://secure.na4.adobesign.com/api/rest/v6/agreements/' . $id. '/combinedDocument', [
+                'headers' => [
+                    'Authorization' => "Bearer {$apiKey}",
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+
+            $agreements = $response->getBody()->getContents();
+
+            return $agreements;
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 401) {
+                return redirect()->route('adobe.login');
+            }
+
+            return back()->withErrors(['message' => 'Something went wrong. Please try again.']);
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      */

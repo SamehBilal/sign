@@ -234,6 +234,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
+
                                                     <button x-data="{ loading: false }"
                                                         @click="loading = true; openAgreementModal('{{ $template['id'] }}', $event, () => loading = false)"
                                                         :class="loading ? 'cursor-not-allowed text-gray-400' :
@@ -277,6 +278,30 @@
                                                             </svg>
                                                         </template>
                                                     </button>
+
+                                                    <button x-data="{ loading: false }"
+                                                        @click="loading = true; openDocumentModal('{{ $template['id'] }}', $event, () => loading = false)"
+                                                        :class="loading ? 'cursor-not-allowed text-gray-400' :
+                                                            'text-gray-600 hover:text-gray-800'"
+                                                        :disabled="loading">
+                                                        <template x-if="!loading">
+                                                            <x-icon-document />
+                                                        </template>
+                                                        <template x-if="loading">
+                                                            <svg class="animate-spin h-5 w-5 text-gray-400"
+                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24">
+                                                                <circle class="opacity-25" cx="12"
+                                                                    cy="12" r="10" stroke="currentColor"
+                                                                    stroke-width="4">
+                                                                </circle>
+                                                                <path class="opacity-75" fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8V0C6.477 0 0 6.477 0 12h4zm2 5.291A7.96 7.96 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                                </path>
+                                                            </svg>
+                                                        </template>
+                                                    </button>
+
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -333,6 +358,31 @@
             <div class="mt-6" id="agreement-events-data">
 
             </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+
+                <x-primary-button class="ms-3" x-on:click="$dispatch('close')">
+                    {{ __('OK') }}
+                </x-primary-button>
+            </div>
+        </div>
+    </x-modal>
+
+    <x-modal :name="'document-modal'" :show="false" focusable lg>
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900">
+                {{ __('Template Document') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600">
+                {{ __('Below you will find the PDF document related to this template.') }}
+            </p>
+
+            <canvas class="mt-6" id="pdfCanvas"></canvas>
+            <div id="document-content"></div>
 
             <div class="mt-6 flex justify-end">
                 <x-secondary-button x-on:click="$dispatch('close')">
@@ -633,6 +683,64 @@
                         const detailsDiv = document.getElementById('agreementDetails');
                         detailsDiv.innerHTML = `<p>Error loading agreement data.</p>`;
                     }).finally(() => {
+                        if (callback) callback();
+                    });
+            };
+        </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+
+
+        <script>
+            window.openDocumentModal = function(id, event, callback) {
+                const dataModalBody = document.getElementById('document-content');
+                const button = event.currentTarget;
+                dataModalBody.innerHTML = ''; // Clear previous content
+                fetch(`/templates/${id}/file`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.arrayBuffer())
+                    .then(data => {
+                        const loadingTask = pdfjsLib.getDocument(data);
+                        loadingTask.promise.then(pdf => {
+                            console.log('PDF loaded');
+                            // Get the first page of the PDF
+                            pdf.getPage(1).then(page => {
+                                console.log('Page loaded');
+
+                                const canvas = document.getElementById('pdfCanvas');
+                                const context = canvas.getContext('2d');
+
+                                const viewport = page.getViewport({
+                                    scale: 1
+                                });
+                                canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+
+                                // Render the page
+                                const renderContext = {
+                                    canvasContext: context,
+                                    viewport: viewport
+                                };
+                                page.render(renderContext);
+                            });
+                        });
+                        const modalName = 'document-modal';
+                        window.dispatchEvent(new CustomEvent('open-modal', {
+                            detail: modalName
+                        }));
+                    })
+                    .catch(error => {
+                        console.error('Error fetching document:', error);
+                        const detailsDiv = document.getElementById('document-content');
+                        detailsDiv.innerHTML = `<p>Error loading document.</p>`;
+                    })
+                    .finally(() => {
                         if (callback) callback();
                     });
             };

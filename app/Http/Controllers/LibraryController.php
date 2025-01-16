@@ -135,4 +135,29 @@ class LibraryController extends Controller
             return back()->withErrors(['message' => 'Something went wrong. Please try again.']);
         }
     }
+
+    public function file($id)
+    {
+        $apiKey = session()->get('ADOBESIGN_ACCESS_TOKEN');
+        $client = new Client();
+
+        try {
+            $response = $client->get('https://secure.na4.adobesign.com/api/rest/v6/libraryDocuments/' . $id. '/combinedDocument', [
+                'headers' => [
+                    'Authorization' => "Bearer {$apiKey}",
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+
+            $templates = $response->getBody()->getContents();
+            
+            return $templates;
+        } catch (ClientException $e) {
+            if ($e->getResponse()->getStatusCode() === 401) {
+                return redirect()->route('adobe.login');
+            }
+
+            return back()->withErrors(['message' => 'Something went wrong. Please try again.']);
+        }
+    }
 }

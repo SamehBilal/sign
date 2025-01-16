@@ -82,7 +82,8 @@
                                 <div class="mb-4">
                                     <x-input-label for="template" :value="__('Select Template')" />
                                     <select id="template" name="template_id"
-                                        class="mt-1 block w-full text-sm text-gray-500" required>
+                                        class="mt-1 block w-full text-sm text-gray-500" required
+                                        onchange="loadDocumentTemplate()">
                                         @if (array_key_exists('libraryDocumentList', $templates))
                                             @foreach ($templates['libraryDocumentList'] as $template)
                                                 <option value="{{ $template['id'] }}"
@@ -321,6 +322,131 @@
                         this.appendChild(agreementsInput);
                     });
                 </script>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+
+                <script>
+                    function loadDocumentTemplate() {
+                        let loadingToast = Toastify({
+                            text: `
+                                <div class="flex items-center space-x-2">
+                                    <!-- Using Tailwind classes for icon -->
+                                    <i class="fas fa-sync-alt fa-spin text-white"></i>
+                                    <span>{{ __('Previewing template....') }}</span>
+                                </div>`,
+                            duration: -1, // indefinite duration
+                            close: false, // Hide close button
+                            gravity: "bottom",
+                            position: "center",
+                            backgroundColor: "rgb(31 41 55 / 1)", // Dark background color
+                            stopOnFocus: true,
+                            className: "rounded-toast",
+                            escapeMarkup: false, // Allow HTML rendering
+                        }).showToast();
+
+
+                        // Add rotating icon to the toast
+                        /* let iconElement = document.createElement("i");
+                        iconElement.classList.add("fas", "fa-sync-alt", "fa-spin"); // Add spinning reload icon
+                        loadingToast.node.prepend(iconElement); // Prepend the icon to the toast */
+
+                        const selectElement = document.getElementById('template');
+                        const selectedOption = selectElement.options[selectElement.selectedIndex];
+                        const templateId = selectedOption.value;
+
+                        window.openDocumentModal(templateId, event, function() {
+                            loadingToast.hideToast();
+                            Toastify({
+                                text: "{{ __('Preview successful!') }}",
+                                duration: 3000,
+                                close: true,
+                                gravity: "bottom",
+                                position: "center",
+                                backgroundColor: "rgb(31 41 55 / 1)",
+                                stopOnFocus: true,
+                                className: "rounded-toast"
+                            }).showToast();
+                        });
+                    }
+
+                    window.openDocumentModal = function(id, event, callback) {
+                        const dataModalBody = document.getElementById('document-content');
+                        const button = event.currentTarget;
+                        dataModalBody.innerHTML = ''; // Clear previous content
+                        fetch(`/templates/${id}/file`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({})
+                            })
+                            .then(response => response.arrayBuffer())
+                            .then(data => {
+                                const loadingTask = pdfjsLib.getDocument(data);
+                                loadingTask.promise.then(pdf => {
+                                    console.log('PDF loaded');
+                                    // Get the first page of the PDF
+                                    pdf.getPage(1).then(page => {
+                                        console.log('Page loaded');
+
+                                        const canvas = document.getElementById('pdfCanvas');
+                                        const context = canvas.getContext('2d');
+
+                                        const viewport = page.getViewport({
+                                            scale: 1
+                                        });
+                                        canvas.width = viewport.width;
+                                        canvas.height = viewport.height;
+
+                                        // Render the page
+                                        const renderContext = {
+                                            canvasContext: context,
+                                            viewport: viewport
+                                        };
+                                        page.render(renderContext);
+                                    });
+                                });
+                                const modalName = 'document-modal';
+                                window.dispatchEvent(new CustomEvent('open-modal', {
+                                    detail: modalName
+                                }));
+                            })
+                            .catch(error => {
+                                console.error('Error fetching document:', error);
+                                const detailsDiv = document.getElementById('document-content');
+                                detailsDiv.innerHTML = `<p>Error loading document.</p>`;
+                            })
+                            .finally(() => {
+                                if (callback) callback();
+                            });
+                    };
+                </script>
+
+                <x-modal :name="'document-modal'" :show="false" focusable lg>
+                    <div class="p-6">
+                        <h2 class="text-lg font-medium text-gray-900">
+                            {{ __('Template Document') }}
+                        </h2>
+
+                        <p class="mt-1 text-sm text-gray-600">
+                            {{ __('Below you will find the PDF document related to this template.') }}
+                        </p>
+
+                        <canvas class="mt-6" id="pdfCanvas"></canvas>
+                        <div id="document-content"></div>
+
+                        <div class="mt-6 flex justify-end">
+                            <x-secondary-button x-on:click="$dispatch('close')">
+                                {{ __('Cancel') }}
+                            </x-secondary-button>
+
+                            <x-primary-button class="ms-3" x-on:click="$dispatch('close')">
+                                {{ __('OK') }}
+                            </x-primary-button>
+                        </div>
+                    </div>
+                </x-modal>
             </div>
         </div>
     </div>

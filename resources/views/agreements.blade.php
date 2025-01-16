@@ -84,10 +84,12 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
                             </div>
 
-                            <x-input-label for="email" :value="__('Receptient Email')" />
-                            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
-                                :value="old('email')" />
-                            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                            <div>
+                                <x-input-label for="email" :value="__('Receptient Email')" />
+                                <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
+                                    :value="old('email')" required />
+                                <x-input-error class="mt-2" :messages="$errors->get('email')" />
+                            </div>
 
                             <div>
                                 <x-input-label for="id" :value="__('Transient ID')" />
@@ -292,6 +294,29 @@
                                                                 </svg>
                                                             </template>
                                                         </button>
+
+                                                        <button x-data="{ loading: false }"
+                                                            @click="loading = true; openDocumentModal('{{ $agreement['id'] }}', $event, () => loading = false)"
+                                                            :class="loading ? 'cursor-not-allowed text-gray-400' :
+                                                                'text-gray-600 hover:text-gray-800'"
+                                                            :disabled="loading">
+                                                            <template x-if="!loading">
+                                                                <x-icon-document />
+                                                            </template>
+                                                            <template x-if="loading">
+                                                                <svg class="animate-spin h-5 w-5 text-gray-400"
+                                                                    xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                    viewBox="0 0 24 24">
+                                                                    <circle class="opacity-25" cx="12"
+                                                                        cy="12" r="10" stroke="currentColor"
+                                                                        stroke-width="4">
+                                                                    </circle>
+                                                                    <path class="opacity-75" fill="currentColor"
+                                                                        d="M4 12a8 8 0 018-8V0C6.477 0 0 6.477 0 12h4zm2 5.291A7.96 7.96 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                                    </path>
+                                                                </svg>
+                                                            </template>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -349,6 +374,31 @@
             <div class="mt-6" id="agreement-events-data">
 
             </div>
+
+            <div class="mt-6 flex justify-end">
+                <x-secondary-button x-on:click="$dispatch('close')">
+                    {{ __('Cancel') }}
+                </x-secondary-button>
+
+                <x-primary-button class="ms-3" x-on:click="$dispatch('close')">
+                    {{ __('OK') }}
+                </x-primary-button>
+            </div>
+        </div>
+    </x-modal>
+
+    <x-modal :name="'document-modal'" :show="false" focusable lg>
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900">
+                {{ __('Template Document') }}
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600">
+                {{ __('Below you will find the PDF document related to this template.') }}
+            </p>
+
+            <canvas class="mt-6" id="pdfCanvas"></canvas>
+            <div id="document-content"></div>
 
             <div class="mt-6 flex justify-end">
                 <x-secondary-button x-on:click="$dispatch('close')">
@@ -583,6 +633,32 @@
             window.openAgreementEventsModal = function(id, event, callback) {
                 const button = event.currentTarget;
 
+                function getDeviceFromUserAgent(userAgent) {
+                    if (!userAgent) return 'Unknown Device';
+
+                    if (userAgent.indexOf('Windows NT') !== -1) {
+                        return 'Windows PC';
+                    } else if (userAgent.indexOf('Macintosh') !== -1) {
+                        return 'Mac';
+                    } else if (userAgent.indexOf('Linux') !== -1) {
+                        return 'Linux PC';
+                    } else if (userAgent.indexOf('Android') !== -1) {
+                        return 'Android Device';
+                    } else if (userAgent.indexOf('iPhone') !== -1 || userAgent.indexOf('iPad') !== -1) {
+                        return 'iOS Device';
+                    } else {
+                        return 'Could not identify the device';
+                    }
+                }
+
+                function getDeviceInfo(device) {
+                    if (/^\d+$/.test(device)) {
+                        return 'A call from API';
+                    } else {
+                        return getDeviceFromUserAgent(device);
+                    }
+                }
+
                 fetch(`/agreements/${id}/events`, {
                         method: 'POST',
                         headers: {
@@ -604,6 +680,10 @@
                                     .toLowerCase()
                                     .replace(/_/g, ' ')
                                     .replace(/\b\w/g, char => char.toUpperCase());
+
+                                const deviceInfo = event.device ? getDeviceInfo(event.device) :
+                                    'No device info available';
+
                                 timelineHTML += `
                                 <div class="relative pb-8">
                                     <div class="mt-4 sm:ml-10 sm:flex sm:items-start">
@@ -617,6 +697,9 @@
                                             </div>
                                             <div class="text-sm text-gray-500">
                                                 <strong>Description:</strong> ${event.description}
+                                            </div>
+                                            <div class="text-sm text-gray-500">
+                                                <strong>Device:</strong> ${deviceInfo}
                                             </div>
                                         </div>
                                     </div>
@@ -649,6 +732,64 @@
                         console.error('Error fetching agreement data:', error);
                         const detailsDiv = document.getElementById('agreementDetails');
                         detailsDiv.innerHTML = `<p>Error loading agreement data.</p>`;
+                    })
+                    .finally(() => {
+                        if (callback) callback();
+                    });
+            };
+        </script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+
+
+        <script>
+            window.openDocumentModal = function(id, event, callback) {
+                const dataModalBody = document.getElementById('document-content');
+                const button = event.currentTarget;
+                dataModalBody.innerHTML = ''; // Clear previous content
+                fetch(`/agreements/${id}/file`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.arrayBuffer())
+                    .then(data => {
+                        const loadingTask = pdfjsLib.getDocument(data);
+                        loadingTask.promise.then(pdf => {
+                            console.log('PDF loaded');
+                            // Get the first page of the PDF
+                            pdf.getPage(1).then(page => {
+                                console.log('Page loaded');
+
+                                const canvas = document.getElementById('pdfCanvas');
+                                const context = canvas.getContext('2d');
+
+                                const viewport = page.getViewport({
+                                    scale: 1
+                                });
+                                canvas.width = viewport.width;
+                                canvas.height = viewport.height;
+
+                                // Render the page
+                                const renderContext = {
+                                    canvasContext: context,
+                                    viewport: viewport
+                                };
+                                page.render(renderContext);
+                            });
+                        });
+                        const modalName = 'document-modal';
+                        window.dispatchEvent(new CustomEvent('open-modal', {
+                            detail: modalName
+                        }));
+                    })
+                    .catch(error => {
+                        console.error('Error fetching document:', error);
+                        const detailsDiv = document.getElementById('document-content');
+                        detailsDiv.innerHTML = `<p>Error loading document.</p>`;
                     })
                     .finally(() => {
                         if (callback) callback();
