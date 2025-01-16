@@ -517,7 +517,7 @@
                 const button = event.currentTarget;
                 const dataModalBody = document.getElementById('agreement-data');
                 dataModalBody.innerHTML = '';
-                fetch(`/agreements/${id}`, {
+                fetch(`public/agreements/${id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -659,7 +659,7 @@
                     }
                 }
 
-                fetch(`/agreements/${id}/events`, {
+                fetch(`public/agreements/${id}/events`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -747,7 +747,7 @@
                 const dataModalBody = document.getElementById('document-content');
                 const button = event.currentTarget;
                 dataModalBody.innerHTML = ''; // Clear previous content
-                fetch(`/agreements/${id}/file`, {
+                fetch(`public/agreements/${id}/file`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

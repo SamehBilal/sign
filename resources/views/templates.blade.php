@@ -501,7 +501,7 @@
                 const dataModalBody = document.getElementById('agreement-data');
                 const button = event.currentTarget;
                 dataModalBody.innerHTML = '';
-                fetch(`/templates/${id}`, {
+                fetch(`public/templates/${id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -616,7 +616,7 @@
 
             window.openAgreementEventsModal = function(id, event, callback) {
                 const button = event.currentTarget;
-                fetch(`/templates/${id}/events`, {
+                fetch(`public/templates/${id}/events`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -696,7 +696,7 @@
                 const dataModalBody = document.getElementById('document-content');
                 const button = event.currentTarget;
                 dataModalBody.innerHTML = ''; // Clear previous content
-                fetch(`/templates/${id}/file`, {
+                fetch(`public/templates/${id}/file`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
