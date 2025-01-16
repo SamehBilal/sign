@@ -216,18 +216,67 @@
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
                                                     {{ $template['modifiedDate'] }}</td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
-                                                    {{ $template['status'] }}</td>
+                                                    @php
+                                                        $statusText = ucwords(
+                                                            str_replace('_', ' ', strtolower($template['status'])),
+                                                        );
+                                                        $statusColors = [
+                                                            'authoring' => 'bg-blue-100 text-blue-800',
+                                                            'active' => 'bg-green-100 text-green-800',
+                                                        ];
+                                                        $badgeColor =
+                                                            $statusColors[strtolower($statusText)] ??
+                                                            'bg-gray-100 text-gray-800';
+                                                    @endphp
+                                                    <span
+                                                        class="px-2 py-1 rounded text-xs font-medium {{ $badgeColor }}">
+                                                        {{ $statusText }}
+                                                    </span>
+                                                </td>
                                                 <td class="px-6 text-sm py-4 whitespace-nowrap">
-                                                    <button x-data=""
-                                                        @click="window.openAgreementModal('{{ $template['id'] }}')"
-                                                        class="text-gray-600 hover:text-gray-800">
-                                                        <x-icon-view />
+                                                    <button x-data="{ loading: false }"
+                                                        @click="loading = true; openAgreementModal('{{ $template['id'] }}', $event, () => loading = false)"
+                                                        :class="loading ? 'cursor-not-allowed text-gray-400' :
+                                                            'text-gray-600 hover:text-gray-800'"
+                                                        :disabled="loading">
+                                                        <template x-if="!loading">
+                                                            <x-icon-view />
+                                                        </template>
+                                                        <template x-if="loading">
+                                                            <svg class="animate-spin h-5 w-5 text-gray-400"
+                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24">
+                                                                <circle class="opacity-25" cx="12" cy="12"
+                                                                    r="10" stroke="currentColor" stroke-width="4">
+                                                                </circle>
+                                                                <path class="opacity-75" fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8V0C6.477 0 0 6.477 0 12h4zm2 5.291A7.96 7.96 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                                </path>
+                                                            </svg>
+                                                        </template>
                                                     </button>
-                                                    <button
-                                                            @click="window.openAgreementEventsModal('{{ $template['id'] }}')"
-                                                            class="text-gray-600 hover:text-gray-800">
+
+                                                    <button x-data="{ loading: false }"
+                                                        @click="loading = true; openAgreementEventsModal('{{ $template['id'] }}', $event, () => loading = false)"
+                                                        :class="loading ? 'cursor-not-allowed text-gray-400' :
+                                                            'text-gray-600 hover:text-gray-800'"
+                                                        :disabled="loading">
+                                                        <template x-if="!loading">
                                                             <x-icon-calendar />
-                                                        </button>
+                                                        </template>
+                                                        <template x-if="loading">
+                                                            <svg class="animate-spin h-5 w-5 text-gray-400"
+                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24">
+                                                                <circle class="opacity-25" cx="12"
+                                                                    cy="12" r="10" stroke="currentColor"
+                                                                    stroke-width="4"></circle>
+                                                                <path class="opacity-75" fill="currentColor"
+                                                                    d="M4 12a8 8 0 018-8V0C6.477 0 0 6.477 0 12h4zm2 5.291A7.96 7.96 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                                                </path>
+                                                            </svg>
+                                                        </template>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -398,8 +447,9 @@
         </script>
 
         <script>
-            window.openAgreementModal = function(id) {
+            window.openAgreementModal = function(id, event, callback) {
                 const dataModalBody = document.getElementById('agreement-data');
+                const button = event.currentTarget;
                 dataModalBody.innerHTML = '';
                 fetch(`/templates/${id}`, {
                         method: 'POST',
@@ -509,10 +559,13 @@
                         console.error('Error fetching agreement data:', error);
                         const detailsDiv = document.getElementById('agreementDetails');
                         detailsDiv.innerHTML = `<p>Error loading agreement data.</p>`;
+                    }).finally(() => {
+                        if (callback) callback();
                     });
             };
 
-            window.openAgreementEventsModal = function(id) {
+            window.openAgreementEventsModal = function(id, event, callback) {
+                const button = event.currentTarget;
                 fetch(`/templates/${id}/events`, {
                         method: 'POST',
                         headers: {
@@ -530,14 +583,15 @@
                             let timelineHTML = `<div class="space-y-4">`;
 
                             data.events.forEach(event => {
+                                const formattedType = event.type
+                                    .toLowerCase()
+                                    .replace(/_/g, ' ')
+                                    .replace(/\b\w/g, char => char.toUpperCase());
                                 timelineHTML += `
                                 <div class="relative pb-8">
                                     <div class="mt-4 sm:ml-10 sm:flex sm:items-start">
                                         <div class="ml-4">
-                                            <h2 class="text-sm font-medium text-gray-900">${event.type}</h2>
-                                             <div class="text-sm text-gray-500">
-                                                <strong>Action:</strong> ${event.type}
-                                            </div>
+                                            <h2 class="text-sm font-medium text-gray-900">${formattedType}</h2>
                                             <div class="text-sm text-gray-500">
                                                 <strong>Acting User:</strong> ${event.actingUserName} (${event.actingUserEmail})
                                             </div>
@@ -578,6 +632,8 @@
                         console.error('Error fetching agreement data:', error);
                         const detailsDiv = document.getElementById('agreementDetails');
                         detailsDiv.innerHTML = `<p>Error loading agreement data.</p>`;
+                    }).finally(() => {
+                        if (callback) callback();
                     });
             };
         </script>

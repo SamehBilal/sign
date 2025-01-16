@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('index') }}">
+                    <a href="{{ route('dashboard') }}">
                         <img src="{{ asset('assets/img/logo1.png') }}" alt="logo" style="height: 42px" />
                     </a>
                 </div>
@@ -146,7 +146,7 @@
             if (timeLeft <= 0) {
                 countdownElement.textContent = "Token Expired!";
                 if (!toastShown) {
-                    toastShown = true; 
+                    toastShown = true;
                     Toastify({
                         text: "{{ __('Your session has expired.') }}",
                         duration: 3000,

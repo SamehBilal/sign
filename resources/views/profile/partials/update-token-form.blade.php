@@ -23,11 +23,11 @@
             <x-input-error class="mt-2" :messages="$errors->get('access_token')" />
         </div>
 
-        <div>
-            <x-input-label for="expires_in" :value="__('Expires In')" />
-            <x-text-input id="expires_in" name="expires_in" type="text" class="mt-1 block w-full" :value="old('expires_in', $user->expires_in)" autocomplete="expires_in" />
-            <x-input-error class="mt-2" :messages="$errors->get('expires_in')" />
-        </div>
+       {{--  <div>
+            <x-input-label for="expires_in" :value="__('Expires In')" /> --}}
+            <x-text-input id="expires_in" name="expires_in" type="hidden" class="mt-1 block w-full" :value="old('expires_in', $user->expires_in)" autocomplete="expires_in" />
+            {{-- <x-input-error class="mt-2" :messages="$errors->get('expires_in')" />
+        </div> --}}
 
         <div class="flex items-center gap-4">
             <x-secondary-button onclick="location.href='{{ route('adobe.login') }}'">{{ __('Generate New Token') }}</x-secondary-button>
