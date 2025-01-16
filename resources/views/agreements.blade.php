@@ -517,7 +517,8 @@
                 const button = event.currentTarget;
                 const dataModalBody = document.getElementById('agreement-data');
                 dataModalBody.innerHTML = '';
-                fetch(`/agreements/${id}`, {
+                const url = `{{ route('agreements.show', ['id' => '__id__']) }}`.replace('__id__', id);
+                fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -658,8 +659,8 @@
                         return getDeviceFromUserAgent(device);
                     }
                 }
-
-                fetch(`/agreements/${id}/events`, {
+                const url = `{{ route('agreements.events', ['id' => '__id__']) }}`.replace('__id__', id);
+                fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -744,10 +745,11 @@
 
         <script>
             window.openDocumentModal = function(id, event, callback) {
+                const url = `{{ route('agreements.file', ['id' => '__id__']) }}`.replace('__id__', id);
                 const dataModalBody = document.getElementById('document-content');
                 const button = event.currentTarget;
                 dataModalBody.innerHTML = ''; // Clear previous content
-                fetch(`/agreements/${id}/file`, {
+                fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

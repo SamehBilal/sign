@@ -498,10 +498,11 @@
 
         <script>
             window.openAgreementModal = function(id, event, callback) {
+                const url = `{{ route('templates.show', ['id' => '__id__']) }}`.replace('__id__', id);
                 const dataModalBody = document.getElementById('agreement-data');
                 const button = event.currentTarget;
                 dataModalBody.innerHTML = '';
-                fetch(`/templates/${id}`, {
+                fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -616,7 +617,8 @@
 
             window.openAgreementEventsModal = function(id, event, callback) {
                 const button = event.currentTarget;
-                fetch(`/templates/${id}/events`, {
+                const url = `{{ route('templates.events', ['id' => '__id__']) }}`.replace('__id__', id);
+                fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -695,8 +697,9 @@
             window.openDocumentModal = function(id, event, callback) {
                 const dataModalBody = document.getElementById('document-content');
                 const button = event.currentTarget;
-                dataModalBody.innerHTML = ''; // Clear previous content
-                fetch(`/templates/${id}/file`, {
+                const url = `{{ route('templates.file', ['id' => '__id__']) }}`.replace('__id__', id);
+                dataModalBody.innerHTML = '';
+                fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
