@@ -68,7 +68,7 @@ class SocialiteController extends Controller
                         'access_token' => $accessToken,
                         'expires_in' => $token_expiration_time,
                         'refresh_token' => $refreshToken,
-                        'password' => '$2y$12$pWmzu/cyKUq0xrJenDJmxeS/KJOLHRZ8ZgaywILSGGqhh5mDXNieu',
+                        'password' => Hash::make('WOQJASewqda@132!#$'),
                     ]
                 );
 
