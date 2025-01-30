@@ -17,7 +17,7 @@ class AdobeSignService
         $this->client = new Client();
     }
 
-    public function sendAgreement($templateId, $recipients, $documentName, $vendor, $fullName, $bankName, $ibanAed, $ibanUsd, $ibanEur, $swiftCode, $Address, $telephone, $project, $fullAmount)
+    public function sendAgreement($templateId, $recipients, $documentName, $vendor, $fullName, $bankName, $iban, $bankAddress, $currency, $swiftCode, $Address, $mobile, $project, $fullAmount, $passport, $invoice, $date)
     {
         $this->apiKey = session()->get('ADOBESIGN_ACCESS_TOKEN');
         $response = $this->client->post('https://secure.na4.adobesign.com/api/rest/v6/agreements', [
@@ -321,16 +321,16 @@ class AdobeSignService
                         'defaultValue' => $bankName,
                     ],
                     [
-                        'fieldName' => 'iban_aed',
-                        'defaultValue' => $ibanAed,
+                        'fieldName' => 'iban',
+                        'defaultValue' => $iban,
                     ],
                     [
-                        'fieldName' => 'iban_usd',
-                        'defaultValue' => $ibanUsd,
+                        'fieldName' => 'bank_address',
+                        'defaultValue' => $bankAddress,
                     ],
                     [
-                        'fieldName' => 'iban_eur',
-                        'defaultValue' => $ibanEur,
+                        'fieldName' => 'currency',
+                        'defaultValue' => $currency,
                     ],
                     [
                         'fieldName' => 'swift_code',
@@ -341,16 +341,28 @@ class AdobeSignService
                         'defaultValue' => $Address,
                     ],
                     [
-                        'fieldName' => 'telephone',
-                        'defaultValue' => $telephone,
+                        'fieldName' => 'mobile',
+                        'defaultValue' => $mobile,
                     ],
                     [
                         'fieldName' => 'project',
                         'defaultValue' => $project,
                     ],
                     [
-                        'fieldName' => 'full_amount',
+                        'fieldName' => 'total_amount',
                         'defaultValue' => $fullAmount,
+                    ],
+                    [
+                        'fieldName' => 'passport',
+                        'defaultValue' => $passport,
+                    ],
+                    [
+                        'fieldName' => 'invoice',
+                        'defaultValue' => $invoice,
+                    ],
+                    [
+                        'fieldName' => 'date',
+                        'defaultValue' => $date,
                     ],
                 ],
                 'state' => 'IN_PROCESS',

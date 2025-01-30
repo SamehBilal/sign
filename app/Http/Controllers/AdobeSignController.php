@@ -54,14 +54,17 @@ class AdobeSignController extends Controller
                     $agreement['vendor'],
                     $agreement['full_name'],
                     $agreement['bank_name'],
-                    $agreement['iban_aed'],
-                    $agreement['iban_usd'],
-                    $agreement['iban_eur'],
+                    $agreement['iban'],
+                    $agreement['bank_address'],
+                    $agreement['currency'],
                     $agreement['swift_code'],
                     $agreement['address'],
-                    $agreement['telephone'],
+                    $agreement['mobile'],
                     $agreement['project'],
-                    $agreement['full_amount'],
+                    $agreement['total_amount'],
+                    $agreement['passport'],
+                    $agreement['invoice'],
+                    $agreement['date'],
                 );
             } catch (\Exception $e) {
                 return response()->json(['error' => "Failed to send agreement: {$e->getMessage()}"], 500);

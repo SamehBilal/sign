@@ -23,14 +23,17 @@ class FileUploadController extends Controller
                 'email'         => $row[1],
                 'full_name'     => $row[2],
                 'bank_name'     => $row[3],
-                'iban_aed'      => $row[4],
-                'iban_usd'      => $row[5],
-                'iban_eur'      => $row[6],
+                'iban'          => $row[4],
+                'bank_address'  => $row[5],
+                'currency'      => $row[6],
                 'swift_code'    => $row[7],
                 'address'       => $row[8],
-                'telephone'     => $row[9],
+                'mobile'        => $row[9],
                 'project'       => $row[10],
-                'full_amount'   => $row[11]
+                'total_amount'  => $row[11],
+                'passport'      => $row[12],
+                'invoice'       => $row[13],
+                'date'          => $row[14],
             ];
         }
         return response()->json(['results' => $talents]);

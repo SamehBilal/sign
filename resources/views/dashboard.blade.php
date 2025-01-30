@@ -129,15 +129,15 @@
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('IBAN AED') }}
+                                                    {{ __('IBAN') }}
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('IBAN USD') }}
+                                                    {{ __('Bank Address') }}
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('IBAN EURO') }}
+                                                    {{ __('Currency') }}
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -149,11 +149,23 @@
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('Telephone') }}
+                                                    {{ __('Mobile') }}
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('Full Amount') }}
+                                                    {{ __('Total Amount') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Passport') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Invoice') }}
+                                                </th>
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Date') }}
                                                 </th>
                                             </tr>
                                         </thead>
@@ -205,20 +217,23 @@
                                         const row = `<tr>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${index + 1}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                                            <input type="checkbox" name="selected[]" value="${index}" data-vendor="${item.vendor}" data-full_name="${item.full_name}" data-email="${item.email}" data-bank_name="${item.bank_name}" data-iban_aed="${item.iban_aed}" data-iban_usd="${item.iban_usd}" data-iban_eur="${item.iban_eur}" data-swift_code="${item.swift_code}" data-address="${item.address}" data-telephone="${item.telephone}" data-project="${item.project}" data-full_amount="${item.full_amount}">
+                                                            <input type="checkbox" name="selected[]" value="${index}" data-vendor="${item.vendor}" data-full_name="${item.full_name}" data-email="${item.email}" data-bank_name="${item.bank_name}" data-iban="${item.iban}" data-bank_address="${item.bank_address}" data-currency="${item.currency}" data-swift_code="${item.swift_code}" data-address="${item.address}" data-mobile="${item.mobile}" data-project="${item.project}" data-total_amount="${item.total_amount}" data-passport="${item.passport}" data-invoice="${item.invoice}" data-date="${item.date}">
                                                         </td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.vendor}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.project}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.full_name}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.email}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.bank_name}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.iban_aed}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.iban_usd}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.iban_eur}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.iban}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.bank_address}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.currency}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.swift_code}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.address}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.telephone}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.full_amount}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.mobile}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.total_amount}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.passport}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.invoice}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.date}</td>
                                                     </tr>`;
                                         dataTableBody.insertAdjacentHTML('beforeend', row);
                                     });
@@ -289,14 +304,17 @@
                                 full_name: row.dataset.full_name,
                                 email: row.dataset.email,
                                 bank_name: row.dataset.bank_name,
-                                iban_aed: row.dataset.iban_aed,
-                                iban_usd: row.dataset.iban_usd,
-                                iban_eur: row.dataset.iban_eur,
+                                iban: row.dataset.iban,
+                                bank_address: row.dataset.bank_address,
+                                currency: row.dataset.currency,
                                 swift_code: row.dataset.swift_code,
                                 address: row.dataset.address,
-                                telephone: row.dataset.telephone,
+                                mobile: row.dataset.mobile,
                                 project: row.dataset.project,
-                                full_amount: row.dataset.full_amount,
+                                total_amount: row.dataset.total_amount,
+                                passport: row.dataset.passport,
+                                invoice: row.dataset.invoice,
+                                date: row.dataset.date,
                             });
                         });
 
