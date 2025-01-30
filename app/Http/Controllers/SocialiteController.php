@@ -76,6 +76,15 @@ class SocialiteController extends Controller
                     event(new Registered($userRecord));
 
                     Auth::login($userRecord);
+                }else{
+                    $user = \App\Models\User::findOrFail(auth()->user()->id);
+                    $user->update(
+                        [
+                            'access_token'  => $accessToken,
+                            'expires_in'    => $token_expiration_time,
+                            'refresh_token' => $refreshToken,
+                        ]
+                    );
                 }
 
                 return Redirect::route('profile.edit')->with('status', 'token-updated');
