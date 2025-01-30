@@ -364,6 +364,10 @@ class AdobeSignService
                         'fieldName' => 'date',
                         'defaultValue' => $date,
                     ],
+                    [
+                        'fieldName' => 'email',
+                        'defaultValue' => $recipients,
+                    ],
                 ],
                 'state' => 'IN_PROCESS',
                 'status' => "OUT_FOR_SIGNATURE"
