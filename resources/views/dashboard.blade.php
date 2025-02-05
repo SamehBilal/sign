@@ -153,7 +153,7 @@
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                    {{ __('Total Amount') }}
+                                                    {{ __('Amount') }}
                                                 </th>
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -166,6 +166,11 @@
                                                 <th
                                                     class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                     {{ __('Date') }}
+                                                </th>
+
+                                                <th
+                                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {{ __('Image') }}
                                                 </th>
                                             </tr>
                                         </thead>
@@ -217,10 +222,10 @@
                                         const row = `<tr>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${index + 1}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">
-                                                            <input type="checkbox" name="selected[]" value="${index}" data-vendor="${item.vendor}" data-full_name="${item.full_name}" data-email="${item.email}" data-bank_name="${item.bank_name}" data-iban="${item.iban}" data-bank_address="${item.bank_address}" data-currency="${item.currency}" data-swift_code="${item.swift_code}" data-address="${item.address}" data-mobile="${item.mobile}" data-project="${item.project}" data-total_amount="${item.total_amount}" data-passport="${item.passport}" data-invoice="${item.invoice}" data-date="${item.date}">
+                                                            <input type="checkbox" name="selected[]" value="${index}" data-vendor="${item.vendor}" data-full_name="${item.full_name}" data-email="${item.email}" data-bank_name="${item.bank_name}" data-iban="${item.iban}" data-bank_address="${item.bank_address}" data-currency="${item.currency}" data-swift_code="${item.swift_code}" data-address="${item.address}" data-mobile="${item.mobile}" data-project="${item.project}" data-project1="${item.project1}" data-project2="${item.project2}" data-project3="${item.project3}" data-project4="${item.project4}" data-project5="${item.project5}" data-project6="${item.project6}" data-project7="${item.project7}" data-amount="${item.amount}" data-amount1="${item.amount1}" data-amount2="${item.amount2}" data-amount3="${item.amount3}" data-amount4="${item.amount4}" data-amount5="${item.amount5}" data-amount6="${item.amount6}" data-amount7="${item.amount7}" data-passport="${item.passport}" data-invoice="${item.invoice}" data-date="${item.date}" data-image="${item.image}">
                                                         </td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.vendor}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.project}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.project}, ${item.project1}, ${item.project2}, ${item.project3}, ${item.project4}, ${item.project5}, ${item.project6}, ${item.project7}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.full_name}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.email}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.bank_name}</td>
@@ -230,10 +235,11 @@
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.swift_code}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.address}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.mobile}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.total_amount}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.amount}, ${item.amount1}, ${item.amount2}, ${item.amount3}, ${item.amount4}, ${item.amount5}, ${item.amount6}, ${item.amount7}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.passport}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.invoice}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.date}</td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap">${item.image}</td>
                                                     </tr>`;
                                         dataTableBody.insertAdjacentHTML('beforeend', row);
                                     });
@@ -311,10 +317,25 @@
                                 address: row.dataset.address,
                                 mobile: row.dataset.mobile,
                                 project: row.dataset.project,
-                                total_amount: row.dataset.total_amount,
+                                project1: row.dataset.project1,
+                                project2: row.dataset.project2,
+                                project3: row.dataset.project3,
+                                project4: row.dataset.project4,
+                                project5: row.dataset.project5,
+                                project6: row.dataset.project6,
+                                project7: row.dataset.project7,
+                                amount: row.dataset.amount,
+                                amount1: row.dataset.amount1,
+                                amount2: row.dataset.amount2,
+                                amount3: row.dataset.amount3,
+                                amount4: row.dataset.amount4,
+                                amount5: row.dataset.amount5,
+                                amount6: row.dataset.amount6,
+                                amount7: row.dataset.amount7,
                                 passport: row.dataset.passport,
                                 invoice: row.dataset.invoice,
                                 date: row.dataset.date,
+                                image: row.dataset.image,
                             });
                         });
 

@@ -17,9 +17,42 @@ class AdobeSignService
         $this->client = new Client();
     }
 
-    public function sendAgreement($templateId, $recipients, $documentName, $vendor, $fullName, $bankName, $iban, $bankAddress, $currency, $swiftCode, $Address, $mobile, $project, $fullAmount, $passport, $invoice, $date)
-    {
+    public function sendAgreement(
+        $templateId,
+        $recipients,
+        $documentName,
+        $vendor,
+        $fullName,
+        $bankName,
+        $iban,
+        $bankAddress,
+        $currency,
+        $swiftCode,
+        $Address,
+        $mobile,
+        $project,
+        $project1,
+        $project2,
+        $project3,
+        $project4,
+        $project5,
+        $project6,
+        $project7,
+        $amount,
+        $amount1,
+        $amount2,
+        $amount3,
+        $amount4,
+        $amount5,
+        $amount6,
+        $amount7,
+        $passport,
+        $invoice,
+        $date,
+        $image
+    ) {
         $this->apiKey = session()->get('ADOBESIGN_ACCESS_TOKEN');
+        $fullAmount = $amount + $amount1 + $amount2 + $amount3 + $amount4 + $amount5 + $amount6 + $amount7;
         $response = $this->client->post('https://secure.na4.adobesign.com/api/rest/v6/agreements', [
             'headers' => [
                 'Authorization' => "Bearer {$this->apiKey}",
@@ -288,7 +321,7 @@ class AdobeSignService
                 'status' => 'OUT_FOR_SIGNATURE',
             ], */
             'json' => [
-                "signatureFlow"=> "SENDER_SIGNATURE_NOT_REQUIRED",
+                "signatureFlow" => "SENDER_SIGNATURE_NOT_REQUIRED",
                 'participantSetsInfo' => [
                     [
                         'role' => 'SIGNER',
@@ -349,6 +382,66 @@ class AdobeSignService
                         'defaultValue' => $project,
                     ],
                     [
+                        'fieldName' => 'project1',
+                        'defaultValue' => $project1,
+                    ],
+                    [
+                        'fieldName' => 'project2',
+                        'defaultValue' => $project2,
+                    ],
+                    [
+                        'fieldName' => 'project3',
+                        'defaultValue' => $project3,
+                    ],
+                    [
+                        'fieldName' => 'project4',
+                        'defaultValue' => $project4,
+                    ],
+                    [
+                        'fieldName' => 'project5',
+                        'defaultValue' => $project5,
+                    ],
+                    [
+                        'fieldName' => 'project6',
+                        'defaultValue' => $project6,
+                    ],
+                    [
+                        'fieldName' => 'project7',
+                        'defaultValue' => $project7,
+                    ],
+                    [
+                        'fieldName' => 'amount',
+                        'defaultValue' => $amount,
+                    ],
+                    [
+                        'fieldName' => 'amount1',
+                        'defaultValue' => $amount1,
+                    ],
+                    [
+                        'fieldName' => 'amount2',
+                        'defaultValue' => $amount2,
+                    ],
+                    [
+                        'fieldName' => 'amount3',
+                        'defaultValue' => $amount3,
+                    ],
+                    [
+                        'fieldName' => 'amount4',
+                        'defaultValue' => $amount4,
+                    ],
+                    [
+                        'fieldName' => 'amount5',
+                        'defaultValue' => $amount5,
+                    ],
+                    [
+                        'fieldName' => 'amount6',
+                        'defaultValue' => $amount6,
+                    ],
+                    [
+                        'fieldName' => 'amount7',
+                        'defaultValue' => $amount7,
+                    ],
+                    [
                         'fieldName' => 'total_amount',
                         'defaultValue' => $fullAmount,
                     ],
@@ -363,6 +456,10 @@ class AdobeSignService
                     [
                         'fieldName' => 'date',
                         'defaultValue' => $date,
+                    ],
+                    [
+                        'fieldName' => 'image',
+                        'defaultValue' => $image,
                     ],
                     [
                         'fieldName' => 'email',
