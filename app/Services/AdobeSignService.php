@@ -366,10 +366,6 @@ class AdobeSignService
                         'defaultValue' => $fullName,
                     ],
                     [
-                        'fieldName' => 'full_name1',
-                        'defaultValue' => $fullName,
-                    ],
-                    [
                         'fieldName' => 'bank_name',
                         'defaultValue' => $bankName,
                     ],
@@ -484,6 +480,10 @@ class AdobeSignService
                     [
                         'fieldName' => 'email',
                         'defaultValue' => $recipients,
+                    ],
+                    [
+                        'fieldName' => 'full_name1',
+                        'defaultValue' => $fullName,
                     ],
                 ],
                 'state' => 'IN_PROCESS',
