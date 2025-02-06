@@ -61,6 +61,14 @@ class AdobeSignService
         $amount6 = $amount6 != '' ? $amount6:0;
         $amount7 = $amount7 != '' ? $amount7:0;
         $fullAmount = $amount + $amount1 + $amount2 + $amount3 + $amount4 + $amount5 + $amount6 + $amount7;
+        $amount  = $amount  == 0 ? '':$amount;
+        $amount1 = $amount1 == 0 ? '':$amount1;
+        $amount2 = $amount2 == 0 ? '':$amount2;
+        $amount3 = $amount3 == 0 ? '':$amount3;
+        $amount4 = $amount4 == 0 ? '':$amount4;
+        $amount5 = $amount5 == 0 ? '':$amount5;
+        $amount6 = $amount6 == 0 ? '':$amount6;
+        $amount7 = $amount7 == 0 ? '':$amount7;
         $response = $this->client->post('https://secure.na4.adobesign.com/api/rest/v6/agreements', [
             'headers' => [
                 'Authorization' => "Bearer {$this->apiKey}",
