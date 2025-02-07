@@ -239,7 +239,7 @@
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.passport}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.invoice}</td>
                                                         <td class="px-6 py-4 text-sm whitespace-nowrap">${item.date}</td>
-                                                        <td class="px-6 py-4 text-sm whitespace-nowrap"><img src="${item.image}"></td>
+                                                        <td class="px-6 py-4 text-sm whitespace-nowrap"><img src="${item.image}" height="41px"></td>
                                                     </tr>`;
                                         dataTableBody.insertAdjacentHTML('beforeend', row);
                                     });
